@@ -1,7 +1,7 @@
 ###### imputation functions ######
 #------------- univariate ---------------
 library(foreach)
-
+#library(MLmetrics)
 # median
 impute_median <- function(compound_df){
   imputed_df <- foreach(i = c(1:dim(compound_df)[2]), .combine = 'data.frame') %do% {
@@ -103,12 +103,18 @@ impute_MICE <- function(compound_df, mice_iteration){
     return(-1)
   }else{
     df <- data.frame(compound_df, check.names = T)
-    mice_imp_df <-  mice(data = df, m = mice_iteration, printFlag = F)
-    imputed_df <- complete(mice_imp_df, mice_iteration) # the last iteration will be returned
+    min_val <- abs(min(df, na.rm = T))
+    log_df <- log(df + min_val + 0.001)  #MCC test adding log only to MICE
+         mice_imp_df <- mice(data = log_df, m = mice_iteration, printFlag = F)
+        imputed_df <- complete(mice_imp_df, mice_iteration) # the last iteration will be returned
+        imputed_df <- exp(imputed_df) - 0.001 - min_val #MCC test adding log only to MICE
+ #MCC   mice_imp_df <-  mice(data = df, m = mice_iteration, printFlag = F)
     colnames(imputed_df) <- colnames(compound_df)
   }
   return(imputed_df)
 }
+
+
 
 
 ##### multivariate-optimization functions #####
@@ -118,10 +124,20 @@ mape <- function(imp, mis, true) {
   imp <- as.matrix(imp)
   mis <- as.matrix(mis)
   true <- as.matrix(true)
-  missIndex <- which(is.na(mis))
-  errvec <- abs(imp[missIndex] - true[missIndex])
-  mape_out <- mean(errvec/abs(true[missIndex]))
-  return(mape_out)
+  missIndex <- which(is.na(mis))  
+  errvec <- (abs(imp[missIndex] - true[missIndex]))
+  number <-length(!is.na(errvec/abs(true[missIndex])))
+#  number <-length(true[missIndex]) #/abs(true[missIndex])))
+  
+ # print("HELLO MAPE")
+#  print(number)
+#  print(missIndex)
+  mape_out <- sum(errvec/abs(true[missIndex]), na.rm = TRUE)/number  #MCC added check for NA values
+ # mape_out <- mean(errvec/abs(true[missIndex]))  #MCC added check for NA values
+#  print(mape_out)
+#  mape_out<-MAPE(imp[missIndex],true[missIndex])
+ # print(mape_out)
+      return(mape_out)
 }
 
 # KNN optimization functions
@@ -172,7 +188,7 @@ k_optimization <- function(ori_df, missing_df, k_value_list, missing_type, test_
 
 k_val_optimization <- function(ori_df, missing_df, missing_type){
   # 1. rough search
-  k_values <- c(1, seq(10,100, by = 30)) #MCC increased step from 5 to 200 by into from 10 to 100 by 30
+  k_values <- c(1, seq(10,100, by = 20)) #MCC increased step from 5 to 20 by into from 10 to 100 by 30
   k1 <- k_optimization(ori_df, missing_df, k_values, missing_type, test_class = 1)
   
   # 2. fine search
@@ -208,30 +224,33 @@ tree_optimization <- function(ori_df, missing_df, tree_value_list, missing_type)
 
 tree_val_optimization <- function(ori_df, missing_df, missing_type){
   # rough search
-  tr_values <- c(5, 10, 20, seq(50,150, by = 100)) #MCC changed from 50 to 300 by 50 into from 50 to 150 by 100
+  tr_values <- c(5, 10, 20, seq(50,200, by = 50), 500) #MCC changed from 50 to 300 by 50 into from 50 to 150 by 100, janice added 500 here
   tr1 <- tree_optimization(ori_df, missing_df, tr_values, missing_type)
   return(tr1)
 }
 
 # ----------------------------------------------------------
 # MICE optimization
-opt_iteration <- function(x, imputed_df, missing_df, ori_df){
+opt_iteration <- function(x, imputed_df, missing_df, ori_df,min_val){
   imputed_df_complete <- complete(imputed_df,x)
-  error <- mape(imputed_df_complete, missing_df, ori_df)
+  error <- mape(exp(imputed_df_complete)-0.001-min_val, missing_df, ori_df) #de-log for mice imputation
   return(error)
 }
 
 mice_iteration_opt <- function(ori_df, missing_df, missing_type){
   # number of iterations to test
-  m_max <- 2 #MCC changed from 20 to 2
+  m_max <- 3 #MCC changed from 20 to 2
   
   # imputation
   df <- data.frame(missing_df, check.names = T)
-  imputed_df_out <- mice(data = df, m = m_max, printFlag = F)
-  
+  min_val <- abs(min(df, na.rm = T))
+  log_df <- log(df + min_val + 0.001)  #MCC test adding log only to MICE
+  imputed_df_out <- mice(data = log_df, m = m_max, printFlag = F)
+  imputed_df_out<-(imputed_df_out) 
   # output plots
-  error_out <- sapply(c(1:m_max), function(x) opt_iteration(x, imputed_df_out, missing_df, ori_df))
-  opt_out <- data.frame("iteration" = c(1:m_max), "mape_values"= error_out)
+   error_out <- sapply(c(1:m_max), function(x) opt_iteration(x, imputed_df_out, missing_df, ori_df,min_val))
+
+    opt_out <- data.frame("iteration" = c(1:m_max), "mape_values"= error_out)
   
   # output the line with the optimzed iteration
   optimized_MICE_iteration <- opt_out[which.min(opt_out$mape_values),]
@@ -242,7 +261,9 @@ mice_iteration_opt <- function(ori_df, missing_df, missing_type){
     method = c("MICE"),
     opt_value = as.numeric(optimized_MICE_iteration$iteration),
     mape = as.numeric(optimized_MICE_iteration$mape_values),
-    imputed_df = list(data.frame(complete(imputed_df_out,optimized_MICE_iteration$iteration), check.names = F))
-    )
+    imputed_df = list(data.frame(exp(complete(imputed_df_out,optimized_MICE_iteration$iteration))-0.001-min_val, check.names = F))
+ 
+    
+       )
   return(imputed_collection_mice)
 }

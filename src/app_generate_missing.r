@@ -2,6 +2,8 @@
 
 # Missing completely at random
 generate_MCAR <- function(full_data, missing_percent){
+  
+  missing_percent <- ifelse(missing_percent %in% c(0, 1) || missing_percent>1, 0.3, missing_percent)
   # check the size of the input dataset 992 x 57
   row_num <- dim(full_data)[1]
   col_num <- dim(full_data)[2]
@@ -81,6 +83,8 @@ rand_vect <- function(N, M, sd = 1, pos.only = TRUE) {
 # AIM: To generate missing not at random (MAR) lipid dataset
 missing_index <- function(full_data, lipid_name, missing_value, missing_percentage, covariate_matrix, method){
   
+  missing_percentage <- ifelse(missing_percentage %in% c(0, 1) || missing_percentage>1, 0.3, missing_percentage)
+
   # get number of samples
   sample_size <- dim(full_data)[1]
   # get the lipid
@@ -130,17 +134,22 @@ missing_index <- function(full_data, lipid_name, missing_value, missing_percenta
 generate_MAR <- function(full_data, misspercent, var_group = NULL){
   # list of lipid names
   full_df_var_list <- colnames(full_data)
+  misspercent <- ifelse(misspercent %in% c(0, 1) || misspercent>1, 0.3, misspercent)
+  
   
   # sample size and number of variables
   sample_size <- dim(full_data)[1]
   num_variable <- dim(full_data)[2]
+  print("HELLO0011")
+  print(num_variable)
   
   # generate number of missing missing
   missing_val <- rand_vect(num_variable, num_variable*as.double(misspercent)*sample_size, sd =0.3*as.double(misspercent)*sample_size)
   print(head(missing_val))
   print(head(var_group))
   covariate_matrix <- cov_matrix(full_data, var_group)
-  
+
+
   # generate a missing matrix
   tmp <- c(); matrix <- matrix(data = NA, nrow = sample_size, ncol = num_variable)
   
@@ -173,8 +182,8 @@ generate_MAR <- function(full_data, misspercent, var_group = NULL){
 
 
 generate_MNAR<- function(full_data, misspercent){
+  misspercent <- ifelse(misspercent %in% c(0, 1) || misspercent>1, 0.3, misspercent)
   
-  # missing_index("440.4b", 0.1)
   full_df_var_list <- colnames(full_data)
   # sample size and number of variables
   sample_size <- dim(full_data)[1]

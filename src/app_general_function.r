@@ -7,6 +7,8 @@ library(ggfortify)
 library(Rtsne)
 library(magrittr)
 library(dplyr)
+library(tidyr)
+library(heatmap3)
 
 ###### read in dataset and select variables
 read_in <- function(df_input, var_groups){
@@ -40,8 +42,10 @@ clean_up <- function(compound_only, sample_thres, compound_thres){
   col_missing <- apply(compound_only, 2, function(x) return(sum(is.na(x)) <= col_thres))
   cleaned_df_compound <- compound_only %>% select_if(col_missing)
   # 2. removal by sample
-  row_missing <- apply(cleaned_df_compound, 1, function(x) return(sum(is.na(x)) <= row_thres))
+  #row_missing <- apply(cleaned_df_compound, 1, function(x) return(sum(is.na(x)) <= row_thres))
+  row_missing <- apply(compound_only, 1, function(x) return(sum(is.na(x)) <= row_thres))
   cleaned_df <- cleaned_df_compound %>% filter(row_missing)
+ # cleaned_df <- compound_only %>% filter(row_missing)
   # ======= janice updated this block ============
   
   #-----------------------
@@ -154,16 +158,19 @@ imputation <- function(cleaned_df,  method = "optimization", full_search = FALSE
     imputed_df <- impute_MICE(compound_df = cleaned_df, mice_iteration)
   }
   
-  return(list(imputed_df,table_output))
+  return(list(imputed_df,table_output,method))
 }
 #-----------------------------------------------------
 ##### start optimization
 method_optimization <- function(cleaned_df, missing_percentage, var_group = NULL, full_search = FALSE){
   cat("method_opt - full search ", full_search)
   # 1. filter samples with missing data
-  full_df <- cleaned_df[complete.cases(cleaned_df), ]
-  
-  # 2. remove samples with three methods
+  full_df <- cleaned_df[complete.cases(cleaned_df), ]  # remove rows with missing values
+# if this is empty then try removing columns instead MCC adding
+  if (dim(full_df)[1] == 0){
+  full_df <- cleaned_df[ , colSums(is.na(cleaned_df))==0]  #MCC cleaning columns
+}
+    # 2. remove samples with three methods
   df_MCAR <- generate_MCAR(full_df, missing_percent = missing_percentage)
   df_MAR  <- generate_MAR(full_df, misspercent = missing_percentage, var_group = var_group)
   df_MNAR <- generate_MNAR(full_df, misspercent = missing_percentage)
@@ -247,21 +254,33 @@ test_all_imputation <- function(full_df, missing_df, missing_type, var_group = N
 log_shift <- function(dataset){
   #changed by Anu
   #dataset <- compound_only
-  log_dataset <- log(dataset)
-  print("HELLO")
+#MCC  log_dataset <- log(dataset)
+  #MCC  print("HELLO")
+  #MCC  print(log_dataset)
+  #MCC  min_val <- abs(min(log_dataset, na.rm = T))
+  #MCC  print(min_val)
+  #MCC  transformed_df <- log_dataset + min_val + 0.01
+  #MCC  print("HELLO2")
+  min_val <- abs(min(dataset, na.rm = T))
+  log_dataset <- log(dataset + min_val + 0.001)
+  print("HELLO_20123")
   print(log_dataset)
-  min_val <- abs(min(log_dataset, na.rm = T))
   print(min_val)
-  transformed_df <- log_dataset + min_val + 0.01
-  print("HELLO2")
+ #MCC test transformed_df <- log_dataset 
+  transformed_df <- dataset  #MCC testing - what if there is no log
+  
   return(list(transformed_df, min_val))
 }
 
 
 # reverse data transformation
 reverse_log_shift <- function(dataset, min_val){
-  log <- dataset - 0.01 - min_val
-  original_df <- exp(log)
+#MCC  log <- dataset - 0.01 - min_val
+#MCC  original_df <- exp(log)
+  log_out <- dataset
+ #MCC test original_df <- exp(log_out) - 0.001 - min_val
+  original_df <- (log_out) #MCC testing - what if there is no log
+  
   return(original_df)
   }
 
@@ -278,28 +297,58 @@ add_group_info <- function(imputed_df, group_info){
 ##### PCA plotting
 plot_PCA <- function(df, title){
   # PC calculation
-  pca_df <- df %>% select_if(~ !any(is.na(.))) # select features without missing
+ 
   # centering and z-transformation
+    
+    # 1. filter samples with missing data
+    pca_df <- df[complete.cases(df), ]  # remove rows with missing values
+   
   pca_res <- prcomp(pca_df, scale. = T , center = T)
-  p1 <- fviz_eig(pca_res)
-  p2 <- autoplot(pca_res, data = pca_df, alpha = 0.7, shape = 20, scale = F) +
-    theme_bw() + ggtitle(title)
+ # p1 <- fviz_eig(pca_res)
+  p2 <- autoplot(pca_res, data = pca_df, alpha = 0.7, shape = 20, scale. = TRUE, label = TRUE, label.size = 2,cex = 0.9,label.vjust=-1) + 
+    theme_bw() + theme(plot.title = element_text(hjust = 0.5)) +   ggtitle(title)
   return(p2)
 }
 
 ##### t-SNE plotting
 plot_tSNE <- function(df, title){
-  #Anu Changed, janice changed perplexity => 10
-  title <- paste(title, " \n(perplexity = 10,theta = 0.5,momentum = 0.5,normalize = T,\nfinal_momentum = 0.8,eta = 200,exaggeration_factor = 12)",sep="")
-  tSNE_fit <- df %>% select_if(~ !any(is.na(.))) %>% scale() %>% Rtsne(.,perplexity = 10)
+  #MCC changed to perplexity to 3
+ # imputed_df<-subset(df, (!is.na(df[,2])) & (!is.na(df[,3])))
+#  imputed_df <- imputed_df %>% select_if(~ !any(is.na(.))) # select features without missing
+  # 1. filter samples with missing data
+  imputed_df <- df[complete.cases(df), ]  # remove rows with missing values
+  # if this is empty then try removing columns instead MCC adding
+  #   if (dim(full_df)[1] == 0){
+  #      full_df <- cleaned_df[ , colSums(is.na(cleaned_df))==0]  #MCC cleaning columns  
+  
+   #MCC title <- paste(title, " \n(perplexity = 3,theta = 0.5,momentum = 0.5,normalize = T,\nfinal_momentum = 0.8,eta = 200,exaggeration_factor = 12)",sep="")
+  #tSNE_fit <- imputed_df %>% select_if(~ !any(is.na(.))) %>% scale() %>% Rtsne(.,normalize = T, perplexity = 3)
+  tSNE_fit <- imputed_df %>% select_if(~ !any(is.na(.))) %>% scale() %>% Rtsne(.,normalize = T, perplexity = 1)
   tSNE_df <- tSNE_fit$Y %>% as.data.frame(row.names = rownames(df)) %>% rename(tSNE1="V1", tSNE2="V2")
-  p <- tSNE_df %>% ggplot(aes(x = tSNE1,y = tSNE2))+ geom_point() + theme_bw() + ggtitle(title)
-  return(p)
+  p <- tSNE_df %>% ggplot(aes(x = tSNE1,y = tSNE2))+ geom_point(cex = 0.9) + theme(aspect.ratio=1)  +theme_bw() + theme(plot.title = element_text(hjust = 0.5)) +  ggtitle(title)
+  p + tune::coord_obs_pred()
+    return(p)
 }
 
-
-
-
+plot_histogram <- function(data, title) {
+  # Create an empty list to store the individual histogram plots
+  plots <- list()
+  
+  # Iterate over each column in the dataframe
+  for (col in names(data)) {
+    # Create the ggplot object for the current column
+    p <- ggplot(data, aes(x = .data[[col]])) +
+      geom_histogram(aes(y = ..density..), bins = 30, color = "#000000", fill = "#0099F8",alpha=0.2) +
+      geom_density(color = "#000000", fill = "#F85700", alpha = 0.6)+
+      labs(title = paste("Histogram of original and imputed"), x = "Values", y = "Frequency")
+    
+    # Add the plot to the list
+    plots[[col]] <- p
+  }
+  
+  # Return the list of plots
+  return(plots)
+}
 
 
 
