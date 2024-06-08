@@ -18,10 +18,9 @@ library(ggplot2)
 library(DT)
 library(Hmisc)
 
-source("/var/www/compLiMet/public_html/shiny/dev_site/implimet/src/app_general_function.r")
-source("/var/www/compLiMet/public_html/shiny/dev_site/implimet/src/app_imputation_function.r")
-source("/var/www/compLiMet/public_html/shiny/dev_site/implimet/src/app_generate_missing.r")
-
+source("./src/app_general_function.r")
+source("./src/app_imputation_function.r")
+source("./src/app_generate_missing.r")
 
 
 # UI
@@ -64,7 +63,7 @@ body <- dashboardBody(
           column(12,
               h1("Overview of ImpLiMet"),
               p(
-               "Optimal imputation method depends on the cause of missingness and the characteristics of the data. ImpLiMet enables users to impute missing data using 8 different methods and proposes the optimal imputation approach for the user’s data set if users have at least three features and six samples without any missing values in their dataset. Although focused on metabolomics and lipidomics, ImpLiMet can be used for any dataset."
+               "Selecting the optimal imputation method for a dataset depends on evaluating the cause of the missingness in the data and the characteristics of the data. ImpLiMet enables users to impute missing data using 8 different methods and proposes the optimal imputation approach for the user’s data set if users have at least three features and six samples without any missing values in their dataset. Although focused on metabolomics and lipidomics, ImpLiMet can be used for any dataset."
               ),
               br(),
               p(
@@ -73,18 +72,18 @@ body <- dashboardBody(
               tags$ol(
                 tags$li(
                   p(
-                    "1.	ImpLiMet selects the largest subset of data with no missing values from the user’s dataset. There must be at least three features and six samples to optimize the imputation method.  If this criteria is not met, the user chooses their own implementation method. ",
+                    "ImpLiMet selects the largest subset of data with no missing values from the user’s dataset. There must be at least three features and six samples to optimize the imputation method.  If this criteria is not met, the user chooses their own implementation method. ",
                   )
                 ),
  
                 tags$li(
                   p(
-                  "2.	Three missing mechanisms are then simulated from the user’s data: missing at random (MAR), missing not at random (MNAR), and missing completely at random (MCAR).",
+                  "Three missing mechanisms are then simulated from the user’s data: missing at random (MAR), missing not at random (MNAR), and missing completely at random (MCAR).",
                 )
               ),
                 tags$li(
                   p(
-                    "3.	Eight imputation methods are used to impute missing data in these three simulations.  These imputation methods include five univariate and three multivariate methods:",
+                    "Eight imputation methods are used to impute missing data in these three simulations.  These imputation methods include five univariate and three multivariate methods:",
                     br(),
                     tags$span(
                       tags$ul(
@@ -96,9 +95,8 @@ body <- dashboardBody(
                         tags$li(
                           p(
                             "3 multi-variate methods: ",
-                            tags$b("k-nearest neighbour (KNN), Random Forest (RF), and Multivariate Imputation by Chained Equations (MICE) "),
-                            ". For the multivariate methods, the required parameters (number of neighbours for KNN, trees for RF, and iterations for MICE) are also optimized."
-                        
+                            tags$b("k-nearest neighbour (KNN), Random Forest (RF), and Multivariate Imputation by Chained Equations (MICE)."),
+                            " For the multivariate methods, the required parameters (number of neighbours for KNN, trees for RF, and iterations for MICE) are also optimized."
                           )
                         )
                       )
@@ -111,18 +109,17 @@ body <- dashboardBody(
                 ),
                 tags$li(
                   p(
-                    "5.	A comparison table is displayed showing the MAPE for each method. The method with the lowest MAPE across the missingness simulations is suggested as the optimal method.",
+                    "A comparison table is displayed showing the MAPE for each method. The method with the lowest MAPE across the missingness simulations is suggested as the optimal method.",
                   )
                  ),
+                tags$li(
+               p(
+                "The effect of the chosen imputation method on the data structure is visualized by principal component analysis (PCA), comparing the impact of removing all features and all samples with missing data to the chosen imputation method. Data are autoscaled prior to PCA.",
                 )
               ),
-          
-    
-              br(),
-              p(
-                "6.	The effect of the chosen imputation method on the data structure is visualized by principal component analysis (PCA), comparing the impact of removing all features and all  samples with missing data to the chosen imputation method. Data are autoscaled prior to PCA."
+                ),
               ),
-              br()
+              br(),
           ),
           column(12,
             div(
@@ -167,8 +164,10 @@ body <- dashboardBody(
           ),
           p(
           tags$ol(
-                tags$li("Input data with a single feature measurement group"),
-                          p(
+                tags$li("Input data without multple feature measurement groups"),
+                tags$i("Column one must contain Sample IDs. Row one must contain feature names."),
+                
+                                          p(
            tags$figure(
             align = "left",
             tags$img(src = "./input_data_without_grouping.png",
@@ -177,7 +176,8 @@ body <- dashboardBody(
                      alt = "")
           )
           ),
-          tags$li("Input data with a single feature measurement group.",sep="/"," If the dataset includes features measured in different units by different platforms (multiple feature measurement groups), data should be formatted to indicate which groups should be considered separately for missing data simulation (i.e., which data were measured in the same units on the same platform)."),
+          tags$li("Input data with multiple feature measurement groups."),
+          tags$i("If the dataset includes features measured in different unity or on different platforms (multiple feature measurement groups), data should be formatted to indicate which feature measurement groups are to be considered separately for missing data simulation.  In this case, row one must contain feature names. Row 2 must contain the feature measurement group information."),
  
                                    p(
            tags$figure(
@@ -192,42 +192,14 @@ body <- dashboardBody(
                 )
           ),
           br(),
-  #        p(
-  #          h4("Outputs")
-  #        ),
-  #        p(
-  #        tags$ol(
-  #              tags$li("Imputed dataset for download"),
-  #                        
-  #        tags$li("Table output (if optimization is chosen) example is shown below. If the user chooses the default imputed output data, the input dataset is imputed with RF with tree value = 250 as output (yellow highlight)."),
-  #        br(),
-  #        p(
-  #         tags$figure(
-  #          align = "left",
-  #          tags$img(src = "output.png",
-  #                   width = "50%",
-  #                   height = "50%",
-  #                   alt = "")
-  #          )
-  #        ),
-  #        tags$li("PCA, t-SNE plots"),
- 
-          
-   #     )
-  #    ),
-
- 
-
-          
-          
           
           h3("Sample Data"),
           tags$ol(
             tags$li(
-              tags$a("Input data without group info", href = "./src/input_templates/Input_data_without_group_info.csv")
+              tags$a("Input data without multple feature measurement groups", href = "./src/input_templates/Input_data_without_group_info.csv")
             ),
             tags$li(
-              tags$a("Input data with group info", href = "./src/input_templates/Input_data_with_group_Info.csv")
+              tags$a("Input daa with multiple feature measurement groups", href = "./src/input_templates/Input_data_with_group_Info.csv")
             )
           ),
           br()
@@ -247,7 +219,7 @@ body <- dashboardBody(
           div( id="imputeDiv",
           useWaiter(),
           h2("Step 1"),
-           checkboxInput("vgroup","Select in data input uncludes information about multiple feature measurement groups.",value = F),
+           checkboxInput("vgroup","This box must be selected prior to data upload if input includes information about multiple feature measurement groups (see download sample data for information about the required input format).",value = F),
           p(
             "Upload a file for imputation (*.csv)."
           ),
@@ -268,10 +240,9 @@ body <- dashboardBody(
           textAreaInput("caption", "", width="900px",rows=4),
           downloadButton("export_btn_cleanedData", "Cleaned Data"),
           
-     #MCC     checkboxInput("logshift","Log Shift",value = F),
           h2("Step 3"),
      p(
-       "Select imputation method (Note: a minimum of 3 samples or 3 features without missing values with more values in the other dimension are required for the optimization option)"
+       "Select imputation method (Note: a minimum of 6 samples or 3 features without missing values is required for the full optimization option)"
      ),
           selectInput("imputationAlgorithm",
                       label = "Select imputation method:",
@@ -326,12 +297,6 @@ body <- dashboardBody(
             "Principal component analysis (PCA) for Samples (top) and Features (bottom)"
           ),
           tags$table(width="80%",border="0",
-                     #works          tags$tr(
-  #works            tags$td(span(plotOutput("clustRaw"))),
-  #works           ),                     
-  #works            tags$tr(
-  #works               tags$td(span(plotOutput("clustImputed")))
-  #works           ),
   tags$tr(
     tags$td( span(plotOutput("pcaRaw"))),  tags$td(span(plotOutput("pcaImputed"))),
   ),
@@ -355,7 +320,7 @@ body <- dashboardBody(
           12,
           h1("Troubleshooting ImpLiMet"),
           p(
-            "When troubleshooting, please review this list of common reasons for ImpLiMet failing to run. If you are still experiencing difficulties running our tool, please contact ", a("ldomic@uottawa.ca", href = "mailto: ldomic@uottawa.ca"), " for further assistance. Please include your input dataset and a description of the problem that you experienced. We will reproduce the problem and provide you with a solution."
+            "When troubleshooting, please review this list of common reasons for ImpLiMet failing to run. If you are still experiencing difficulties, please contact ", a("ldomic@uottawa.ca", href = "mailto: ldomic@uottawa.ca"), " for further assistance. Please include your input dataset and a description of the problem that you experienced. We will reproduce the problem and provide you with a solution."
           ),
           br(),
           h4("1. My file does not load or does not produce any results."),
@@ -368,19 +333,19 @@ body <- dashboardBody(
             "ImpLiMet's focus is on missing values and  recognizes empty strings or NA as missing values. Please convert your missing value indicators to empty strings or NA."
           ),
           br(),
-          h4("3. ImpLiMet accepts input datasets with any number of groups."),
+          h4("3. ImpLiMet accepts input datasets with any number of feature measurement groups."),
           p(
             "Although any number of feature measurement groups is acceptable and will provide results keep in mind that more features in a feature measurement group you have the more accurate will be the imputation."
           ),
           br(),
-          h4("4. Sample IDs have to be unique for each row."),
+          h4("4. Sample IDs must be unique for each row."),
           p(
-            "ImpLiMet does not analyze duplicated samples, so sample names have to be unique in the input. Please avoid using only numbers for sample naming. Instead, please use a combination of characters and numbers." # janice added comments
+            "ImpLiMet does not analyze duplicated samples, so sample names must be unique in the input. Please avoid using only numbers for sample naming. Instead, please use a combination of characters and numbers." # janice added comments
           ),
           br(),   
           h4("5. Selection of an Imputation method provides output but selection of the optimization option crashes."),
           p(
-            "There must be a minimum of THREE or more complete (no missing values) columns (features) and minimum of SIX complete rows (samples) to run the optimization option. For very small datasets (e.g. dimensions 3x6) threshold should be set to 10% for full optimization as with larger thresholds dataset remaning after missingness simulation can become insufficient for imputation testing." # MCC added comments
+            "There must be a minimum of THREE or more complete (no missing values) columns (features) and minimum of SIX complete rows (samples) to run the optimization option. For very small datasets (e.g., dimensions 3x6) the sample and feature threshold must be set to 10% for full optimization." # MCC added comments
           ),
           br()   
         ),
@@ -400,17 +365,17 @@ body <- dashboardBody(
           p(a("ldomic@uottawa.ca", href = "mailto: ldomic@uottawa.ca")),
           br(),
           h3("Cite the use of ImpLiMet in a publication"),
-          p("Huiting Ou, Anuradha Surendra, Graeme SV McDowell, Emily Hashimoto-Roth, Jianguo Xia, Steffany A.L. Bennett, Miroslava Cuperlovic-Culf IMPutation for LIpidomics and Metabolomics (IMPLIMET): an online implementation of missing data imputation."),
+          p("Ou H, Surendra A, McDowell GSV, Hashimoto-Roth E,  Xia J, Bennett SAL, Cuperlovic-Culf M (2024) Imputation for Lipidomics and Metabolomics (ImpLiMet): Online optimization and method selection for missing data imputation."),
           br(),
           h3("Public Server"),
-          p("IMPLIMET: ", a("https://complimet.ca/shiny/implimet/", href = "https://complimet.ca/shiny/implimet/")),
+          p("ImpLiMet: ", a("https://complimet.ca/shiny/implimet/", href = "https://complimet.ca/shiny/implimet/")),
           br(),
           h3("Software License"),
           p(
-            "IMPLIMET is free software. You can redistribute it and/or modify it under the terms of the ",
+            "ImpLiMet is free software. You can redistribute it and/or modify it under the terms of the ",
             a("GNU General Public License", href = "https://www.gnu.org/licenses/", target = "_blank"),
-            " v3 (or later versions) as published by the Free Software Foundation. As per the GNU General Public License, IMPLIMET is distributed as a bioinformatic 
-            lipidomic tool to assist users WITHOUT ANY WARRANTY and without any implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. All 
+            " v3 (or later versions) as published by the Free Software Foundation. As per the GNU General Public License, ImpLiMet is distributed as a bioinformatic 
+            tool to assist users WITHOUT ANY WARRANTY and without any implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. All 
             limitations of warranty are indicated in the GNU General Public License."
           ),
           br()
@@ -428,7 +393,7 @@ body <- dashboardBody(
   ################
   tags$head(tags$script(HTML(
       '$(document).ready(function() {
-        $("header").find("nav").append(\'<span class="myClass" style="float:right"><strong>Imp</strong>utation for <strong>Li</strong>pidomics and <strong>Met</strong>abolomics</span>\');
+        $("header").find("nav").append(\'<span class="myClass" style="float:right">Imputation for Lipidomics and Metabolomics</span>\');
       })'
       )))
 )
@@ -441,7 +406,7 @@ ui <- dashboardPage(
   skin = "black",
   tags$head(
    includeCSS("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/complimetGUI.css")
- #  includeCSS("C:/Project/Complimet/Implimet_20240603/www/complimetGUI.css")
+#   includeCSS("C:/Project/Complimet/Implimet_20240603/www/complimetGUI.css")
     
   )
 )
@@ -483,12 +448,10 @@ server <- function(input, output, session) {
   
     ts <- format(Sys.time(), format = "%m%d%Y%H%M%S")
     
-    dir.create(file.path("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/", ts), showWarnings = FALSE)
-  #    dir.create(file.path("C:/Project/Complimet/Implimet_20240603/www/tmp/", ts), showWarnings = FALSE)
+    dir.create(file.path("./www/tmp/", ts), showWarnings = FALSE)
     
       
-   filename <- paste("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/",ts,"/",ts,"_data.csv",sep="")
-  #  filename <- paste("C:/Project/Complimet/Implimet_20240603/www/tmp/",ts,"/",ts,"_data.csv",sep="")
+   filename <- paste("./www/tmp/",ts,"/",ts,"_data.csv",sep="")
     
     cleanedFilename <- paste(ts,"_cleaned_data.csv",sep="")
     file.copy(input$imputationInput$datapath,filename, overwrite = TRUE)
@@ -539,9 +502,7 @@ server <- function(input, output, session) {
       }
     )
     
-   unlink(paste("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/", ts,"/*", sep=""), recursive = T)
-
-  #  unlink(paste("C:/Project/Complimet/Implimet_20240603/www/tmp/", ts,"/*", sep=""), recursive = T)
+   unlink(paste("./www/tmp/", ts,"/*", sep=""), recursive = T)
     
   
   })
@@ -568,13 +529,10 @@ server <- function(input, output, session) {
   
     ts <- format(Sys.time(), format = "%m%d%Y%H%M%S")
 
-    dir.create(file.path("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/", ts), showWarnings = FALSE)
+    dir.create(file.path("./www/tmp/", ts), showWarnings = FALSE)
     
-    filename <- paste("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/",ts,"/",ts,"_data.csv",sep="")
-#    dir.create(file.path("C:/Project/Complimet/Implimet_20240603/www/tmp/", ts), showWarnings = FALSE)
-    
-#    filename <- paste("C:/Project/Complimet/Implimet_20240603/www/tmp/",ts,"/",ts,"_data.csv",sep="")
-    
+    filename <- paste("./www/tmp/",ts,"/",ts,"_data.csv",sep="")
+
     cleanedFilename <- paste(ts,"_cleaned_data.csv",sep="")
     file.copy(input$imputationInput$datapath,filename, overwrite = TRUE)
     
@@ -608,8 +566,7 @@ server <- function(input, output, session) {
       }
     )
     
-    unlink(paste("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/", ts,"/*", sep=""), recursive = T)
-#     unlink(paste("C:/Project/Complimet/Implimet_20240603/www/tmp/", ts,"/*", sep=""), recursive = T)
+    unlink(paste("./www/tmp/", ts,"/*", sep=""), recursive = T)
     
   })
   
@@ -620,11 +577,9 @@ server <- function(input, output, session) {
   
     ts <- format(Sys.time(), format = "%m%d%Y%H%M%S")
     
-   dir.create(file.path("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/", ts), showWarnings = FALSE)
- #     dir.create(file.path("C:/Project/Complimet/Implimet_20240603/www/tmp/", ts), showWarnings = FALSE)
+   dir.create(file.path("./www/tmp/", ts), showWarnings = FALSE)
     
-    filename <- paste("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/",ts,"/",ts,"_data.csv",sep="")
- #   filename <- paste("C:/Project/Complimet/Implimet_20240603/www/tmp/",ts,"/",ts,"_data.csv",sep="")
+  filename <- paste("./www/tmp/",ts,"/",ts,"_data.csv",sep="")
     
     cleanedFilename <- paste(ts,"_cleaned_data.csv",sep="")
     file.copy(input$imputationInput$datapath,filename, overwrite = TRUE)
@@ -656,9 +611,8 @@ server <- function(input, output, session) {
       }
     )
     
-   unlink(paste("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/", ts,"/*", sep=""), recursive = T)
+   unlink(paste("./www/tmp/", ts,"/*", sep=""), recursive = T)
  
- #     unlink(paste("C:/Project/Complimet/Implimet_20240603/www/tmp/", ts,"/*", sep=""), recursive = T)
     
   
   })
@@ -675,21 +629,11 @@ server <- function(input, output, session) {
   
   
     ts <- format(Sys.time(), format = "%m%d%Y%H%M%S")
-#    dir.create(file.path("C:/Project/Complimet/Implimet_20240603/tmp/", ts), showWarnings = FALSE)
-#    dataValues$mainDir <- paste0("C:/Project/Complimet/Implimet_20240603/tmp/", ts)
     
-#    filename <- paste("C:/Project/Complimet/Implimet_20240603/tmp/",ts,"/",ts,"_data.csv",sep="")
+   dir.create(file.path("./www/tmp/", ts), showWarnings = FALSE)
+    dataValues$mainDir <- paste0("./www/tmp/", ts)
     
-    dir.create(file.path("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/", ts), showWarnings = FALSE)
-    dataValues$mainDir <- paste0("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/", ts)
-    
-    filename <- paste("/var/www/compLiMet/public_html/shiny/dev_site/implimet/www/tmp/",ts,"/",ts,"_data.csv",sep="")
-
-#    dir.create(file.path("C:/Project/Complimet/Implimet_20240603/www/tmp/", ts), showWarnings = FALSE)
-#    dataValues$mainDir <- paste0("C:/Project/Complimet/Implimet_20240603/www/tmp/", ts)
-    
-#    filename <- paste("C:/Project/Complimet/Implimet_20240603/www/tmp/",ts,"/",ts,"_data.csv",sep="")
-    
+    filename <- paste("./www/tmp/",ts,"/",ts,"_data.csv",sep="")
         
     cleanedFilename <- paste(ts,"_cleaned_data.csv",sep="")
     dataValues$ts <- ts
@@ -737,18 +681,12 @@ server <- function(input, output, session) {
     dataValues$db_data_cleaned <- compound_only_cleaned
   
     dataValues$compoundOnly <- compound_only_cleaned #MCC added for missing rows fix April11 2024
-    #MCC keep them for now dataValues$compoundOnly[is.na(dataValues$compoundOnly)] <- 0
   
      print(input$imputationAlgorithm)
 
 
- #MCC   if(input$logshift){
-     #MCC      df_logshift <- log_shift(dataValues$db_data_cleaned)
-     #MCC      dataValues$minVal <- df_logshift[[2]] 
-     #MCC      dataValues$db_data_cleaned_logshift <- df_logshift[[1]]
-     #MCC   }else{
       dataValues$db_data_cleaned_logshift <- dataValues$db_data_cleaned
-      #MCC   }
+
     
         
     if(input$imputationAlgorithm=="min"){
@@ -784,7 +722,6 @@ server <- function(input, output, session) {
       dataValues$algo <- "MICE"
       dataValues$imputedDataframe <- imputed_df[[1]]
     }else{
-      # janice added the "full_search" checkbox here
       imputed_df <- imputation(cleaned_df = dataValues$db_data_cleaned_logshift, full_search = input$full_search_in, missing_variable_percentage = compound_missing, method = "optimization", var_group = dataValues$groups)
       
       dataValues$algo <- "Algorithm Optimization"
@@ -823,9 +760,7 @@ server <- function(input, output, session) {
     # reverse transformation
     reversed_imputed_df <- reverse_log_shift(dataValues$imputedDataframe, min_val = dataValues$minVal)
     returned_df <- add_group_info(reversed_imputed_df, dataValues$groups)
-    
-    print("HELLO THERE")
-    
+        
     dataValues$reversed_imputed_df <- returned_df
     
     imputedFilename <- paste(dataValues$ts,"_imputed_data.csv",sep="")
@@ -854,22 +789,12 @@ server <- function(input, output, session) {
     dataValues$pcaImputed <- pca_imputed
     
     
-    # tsne:
-#    tsne_raw <- plot_tSNE(dataValues$compoundOnly, paste("tSNE original data"))
-#    tsne_imputed <- plot_tSNE(reversed_imputed_df, paste("tSNE",dataValues$algo,"imputation"))
-#    dataValues$tsneRaw <- tsne_raw
-#    dataValues$tsneImputed <- tsne_imputed
-    
     # or pca but of features
     tsne_raw <- plot_PCA(t(dataValues$compoundOnly), paste("Cleaned data"))
     tsne_imputed <- plot_PCA(t(reversed_imputed_df), paste("",dataValues$algo,"imputation"))
     dataValues$tsneRaw <- tsne_raw
     dataValues$tsneImputed <- tsne_imputed
-	
-#works hist_raw <- plot_histogram(dataValues$compoundOnly, "Histogram Original data before imputation")
-    #works hist_imputed <- plot_histogram(reversed_imputed_df,  "Histogram Data after imputation")
-    #works     dataValues$clustRaw <- hist_raw
-#works     dataValues$clustImputed <- hist_imputed
+
 
     
     
@@ -882,10 +807,7 @@ server <- function(input, output, session) {
     width = 950, # The width of the plot in inches
     height = 950) 
     
-    #print(dataValues$pcaRaw)
-    
-    
-    #dev.off()
+
     
     output$pcaImputed <- renderPlot({
       dataValues$pcaImputed
@@ -931,43 +853,6 @@ server <- function(input, output, session) {
     
     
     dev.off()
-    
-	
-    #works 	  output$clustRaw <- renderPlot({
-    #works 	    for (col in names(dataValues$clustRaw)) {
-    #works 	      print(dataValues$clustRaw[[col]])
- #works    #works 	    }
-    #works    }, res = 96)
-    
-	  #works     png(file = paste(dataValues$mainDir,"/",dataValues$ts, "_HistogramRaw.png", sep=""),   # The directory you want to save the file in
-	  #works    width = 950, # The width of the plot in inches
-	  #works    height = 950) 
-    
-   # print(dataValues$clustRaw)
-	  #works    for (col in names(dataValues$clustRaw)) {
-	  #works      print(dataValues$clustRaw[[col]])
-#works     }
-    
-	  #works     dev.off()
-    
-    
-    #works    output$clustImputed <- renderPlot({
-    #works     for (col in names(dataValues$clustRaw)) {
-    #works        print(dataValues$clustImputed[[col]])
-    #works      }
-    #works   }, res = 96)
-    
-    
-    #works    png(file = paste(dataValues$mainDir,"/",dataValues$ts, "_HistogramImputed.png", sep=""),   # The directory you want to save the file in
-    #works    width = 950,
-    #works     height = 1000) 
-    
-#    print(plot_histogram(reversed_imputed_df, paste("Histogram",dataValues$algo,"imputation")))
-    #works    for (col in names(dataValues$clustImputed)) {
-    #works       print(dataValues$clustImputed[[col]])
-    #works     }
-    
-    #works    dev.off()
     
     
     
