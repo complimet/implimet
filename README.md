@@ -10,4 +10,6 @@ The performance of each imputation method is determined by the mean absolute per
 A comparison table is displayed showing the MAPE for each method. The method with the lowest MAPE across the missingness simulations is suggested as the optimal method.
 The effect of the chosen imputation method on the data structure is visualized by principal component analysis (PCA), comparing the impact of removing all features and all samples with missing data to the chosen imputation method. Data are autoscaled prior to PCA.
 visit ImpLiMet at: https://complimet.ca/implimet/
+
+
 To run ImpLiMet locally just change source drives and run app.R in RStudio. 
