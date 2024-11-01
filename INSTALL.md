@@ -10,16 +10,7 @@ Dependencies
 
 ImpLiMet requires several R libraries that can be installed with a command:
 install.packages(c("shiny","shinydashboard","shinyWidgets","tidyverse","cluster","factoextra","dendextend",
-"RColorBrewer","gplots","viridis","dplyr","ggplot2","DT","Hmisc","magrittr","impute"),)
+"RColorBrewer","gplots","viridis","dplyr","ggplot2","DT","Hmisc","magrittr","impute","missRanger","mice","factoextra","ggfortify","foreach","Rtsne","magrittr","dplyr","tidyr","heatmap3"))
 
 
-"(missRanger)
-"mice)
-"factoextra)
-library(ggfortify)
-library(foreach)
-library(Rtsne)
-library(magrittr)
-library(dplyr)
-library(tidyr)
-library(heatmap3)
+
