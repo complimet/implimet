@@ -10,11 +10,11 @@ Script Overview
 
 All scripts for ImpLiMet are written in R and are located in src or www folders. Included are:
 
-./src/app.R
-./src/app_data_manipulation.r
-./src/app_general_function.r
-./src/app_generate_missing.r
-./src/app_imputation_function.r
+./app.R - Shiny app creating UI, data input and output and calling of other functions
+./src/app_data_manipulation.r - R code for data preparation for anlaysis
+./src/app_general_function.r - R code with general data manipulation fuction
+./src/app_generate_missing.r - R code for the generation of missing values for method optimization
+./src/app_imputation_function.r - R code with imputation functionalities
 
 
 Dependencies
