@@ -9,3 +9,18 @@ ImpLiMet runs under RShiny and can be easily user within RStudio on any computer
 Dependencies
 
 ImpLiMet requires following R libraries:
+library(shiny)
+library(shinydashboard)
+library(shinyWidgets)
+library(waiter)
+library(tidyverse)  
+library(cluster)    
+library(factoextra)
+library(dendextend)
+library(RColorBrewer)
+library(gplots)
+library(viridis)
+library(dplyr) 
+library(ggplot2)
+library(DT)
+library(Hmisc)
