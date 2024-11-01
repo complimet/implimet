@@ -11,6 +11,10 @@ Script Overview
 All scripts for ImpLiMet are written in R and are located in src or www folders. Included are:
 
 ./src/app.R
+./src/app_data_manipulation.r
+./src/app_general_function.r
+./src/app_generate_missing.r
+./src/app_imputation_function.r
 
 
 Dependencies
