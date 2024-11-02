@@ -1,5 +1,7 @@
 
-Installation instructions 
+# Installation instructions 
+
+
 This document provides a short description of how to use ImpLiMet on your computer.
 
 ImpLiMet is a stand-alone application implemented using the R language (R > 4.0) and the Shiny libraries. It can be installed as any other R package on several operating systems (Windows, macOS and Linux). Download this repository and open app.R in RStudio. Install necessary libraries (see Dependancies bellow) and  just Run Application from RStudio. 
