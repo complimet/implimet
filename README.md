@@ -1,4 +1,4 @@
-Overview of ImpLiMet - Imputation for Lipidomics and Metabolomics
+#Overview of ImpLiMet - Imputation for Lipidomics and Metabolomics
 
 Imputation, the process of replacing missing values in a dataset with estimated values, is required for multivariate and machine learning analyses. Data element omissions happen for a variety of experimental or analytical reasons, often unavoidable in high throughput measurements. Three missingness patterns have been conceptualized: missing completely at random (MCAR), missing at random (MAR), and missing not at random (MNAR).  Each presents unique dependencies between the missing and observed data. As a result, the optimal imputation method for each dataset depends on the type of data, the cause of the missing data, and the nature of relationships between the missing and observed data.  The challenge is to identify the optimal imputation solution for a given dataset.
 
@@ -7,15 +7,15 @@ ImpLiMet enables users to impute missing data using 8 different methods and prop
 
 ImpLiMet is actively maintained, and new features will be added. User suggestions are appreciated and will be considered. 
 
-Authors
+#Authors
 
 See doc/CREDITS for the list of contributors to ImpLiMet
 
-Availability
+#Availability
 
 The latest code and offical ImpLiMet release is published online at https://github.com/complimet/implimet and made available as UI online at: https://complimet.ca/shiny/implimet/ ImpLiMet is open-source and open-code software under the LGPLv3 or later. See doc/COPYING and doc/LICENSE for licensing details.
 
-Contact
+#Contact
 
 For additional information and contacting the authors, please consult the ImpLiMet web page at ((https://complimet.ca/shiny/implimet/)). To report an error or file a request, please send an email to: ldomic@uottawa.ca.
 
