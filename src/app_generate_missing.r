@@ -39,14 +39,9 @@ cov_matrix <- function(full_data, var_group = NULL){
     cov_table <- TIC_sum_matrix - full_data
   }
   else{
-    print("HELL902")
     # create a covariate table using the  group info
     grp_tr <- t(var_group)
     full_data_tr <- t(full_data)
-    print("HELLO900")
-    print(dim(grp_tr))
-    print("HELLO909")
-    print(dim(full_data_tr))
     merged <- merge(grp_tr, full_data_tr, by = 0) %>% data.frame(check.names = F, row.names = 1) %>% mutate(across(c(group),as.factor))
     
     # create a sum table for each sample
@@ -140,14 +135,11 @@ generate_MAR <- function(full_data, misspercent, var_group = NULL){
   # sample size and number of variables
   sample_size <- dim(full_data)[1]
   num_variable <- dim(full_data)[2]
-  print("HELLO0011")
-  print(num_variable)
+
   
   # generate number of missing missing
   missing_val <- rand_vect(num_variable, num_variable*as.double(misspercent)*sample_size, sd =0.3*as.double(misspercent)*sample_size)
-  print(head(missing_val))
-  print(head(var_group))
-  covariate_matrix <- cov_matrix(full_data, var_group)
+    covariate_matrix <- cov_matrix(full_data, var_group)
 
 
   # generate a missing matrix

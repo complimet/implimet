@@ -127,17 +127,9 @@ mape <- function(imp, mis, true) {
   missIndex <- which(is.na(mis))  
   errvec <- (abs(imp[missIndex] - true[missIndex]))
   number <-length(!is.na(errvec/abs(true[missIndex])))
-#  number <-length(true[missIndex]) #/abs(true[missIndex])))
-  
- # print("HELLO MAPE")
-#  print(number)
-#  print(missIndex)
+
   mape_out <- sum(errvec/abs(true[missIndex]), na.rm = TRUE)/number  #MCC added check for NA values
- # mape_out <- mean(errvec/abs(true[missIndex]))  #MCC added check for NA values
-#  print(mape_out)
-#  mape_out<-MAPE(imp[missIndex],true[missIndex])
- # print(mape_out)
-      return(mape_out)
+  return(mape_out)
 }
 
 # KNN optimization functions

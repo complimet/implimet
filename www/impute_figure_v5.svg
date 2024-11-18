@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 555.89 592.62">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: -.11em;
+      }
+
+      .cls-2 {
+        stroke-width: 0px;
+      }
+
+      .cls-2, .cls-3 {
+        fill: #ed1c24;
+      }
+
+      .cls-4 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-3 {
+        stroke: #ed1c24;
+      }
+
+      .cls-3, .cls-5, .cls-6, .cls-7, .cls-8, .cls-9 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-5, .cls-6, .cls-8, .cls-10 {
+        stroke: #010101;
+      }
+
+      .cls-5, .cls-7 {
+        fill: none;
+      }
+
+      .cls-6, .cls-11 {
+        fill: #010101;
+      }
+
+      .cls-7 {
+        stroke: #231f20;
+        stroke-width: 2px;
+      }
+
+      .cls-8, .cls-9, .cls-10 {
+        fill: #fff;
+      }
+
+      .cls-11 {
+        font-family: ArialMT, Arial;
+        font-size: 11px;
+        isolation: isolate;
+      }
+
+      .cls-9 {
+        stroke: #fff;
+      }
+
+      .cls-12 {
+        letter-spacing: 0em;
+      }
+    </style>
+  </defs>
+  <g>
+    <rect class="cls-10" x="466.53" y="173.88" width="88.86" height="35.52" pointer-events="all"/>
+    <g>
+      <path class="cls-5" d="M292.27,56.71v46.54" pointer-events="stroke"/>
+      <path class="cls-6" d="M292.27,106.74l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <rect class="cls-10" x="265.69" y="66.14" width="73.84" height="28.08" pointer-events="all"/>
+    <path class="cls-8" d="M352.01.55l61,27.88-61,27.89-61-27.89L352.01.55Z" pointer-events="all"/>
+    <path class="cls-8" d="M93.53,411.2l7.76-30h102.49l-7.76,30h-102.49Z" pointer-events="all"/>
+    <g>
+      <path class="cls-5" d="M145.62,101.75l-.02,9.98v-1.31,6.78" pointer-events="stroke"/>
+      <path class="cls-6" d="M145.6,119.84l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <ellipse class="cls-10" cx="145.62" cy="88.44" rx="18.27" ry="13.32" pointer-events="all"/>
+    <text class="cls-11" transform="translate(133.5 91.37)"><tspan x="0" y="0">Start</tspan></text>
+    <g>
+      <path class="cls-5" d="M145.6,150.4v10.03-.77,6.78" pointer-events="stroke"/>
+      <path class="cls-6" d="M145.6,169.06l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <path class="cls-8" d="M59.85,150.4l12.69-30h167.68l-12.69,30H59.85Z" pointer-events="all"/>
+    <text class="cls-11" transform="translate(77.25 138.37)"><tspan x="0" y="0">Input data with missing values</tspan></text>
+    <g>
+      <path class="cls-5" d="M145.6,184.62v16.32" pointer-events="stroke"/>
+      <path class="cls-6" d="M145.61,203.56l-1.75-3.5,1.75.87,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <g>
+      <path class="cls-5" d="M84.71,176.95h-37.8v82.7" pointer-events="stroke"/>
+      <path class="cls-6" d="M46.91,261.4l-1.75-2.34,1.75.58,1.75-.58-1.75,2.34Z" pointer-events="all"/>
+    </g>
+    <rect class="cls-10" x="84.71" y="169.62" width="121.82" height="15" pointer-events="all"/>
+    <text class="cls-11" transform="translate(118.52 180.37)"><tspan x="0" y="0">Read input</tspan></text>
+    <g>
+      <path class="cls-5" d="M145.62,239.12v20.88" pointer-events="stroke"/>
+      <path class="cls-6" d="M145.62,262.62l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <rect class="cls-10" x="74.19" y="204.34" width="138.92" height="34.78" pointer-events="all"/>
+    <text class="cls-11" transform="translate(105.77 219.87)"><tspan x="0" y="0">Data filtering by</tspan><tspan x="-27.52" y="13.2">column and row thresholds</tspan></text>
+    <g>
+      <path class="cls-5" d="M195.03,294.81l65.49.08V28.45h26.63" pointer-events="stroke"/>
+      <path class="cls-6" d="M290.29,28.45l-3.14,2.81.79-2.81-.79-2.81,3.14,2.81Z" pointer-events="all"/>
+    </g>
+    <text class="cls-11" transform="translate(232.11 221.87)"><tspan x="0" y="0">YES</tspan></text>
+    <g>
+      <path class="cls-5" d="M145.62,327.11v50.09" pointer-events="stroke"/>
+      <path class="cls-6" d="M145.62,379.82l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <text class="cls-11" transform="translate(147.37 357)"><tspan x="0" y="0">NO</tspan></text>
+    <path class="cls-8" d="M145.62,263.18l50.64,31.96-50.64,31.96-50.64-31.96,50.64-31.96Z" pointer-events="all"/>
+    <text class="cls-11" transform="translate(121.27 292.66)"><tspan x="0" y="0">Imputation</tspan><tspan x="-3.67" y="13.2">optimization</tspan></text>
+    <g>
+      <path class="cls-5" d="M363.92,144.02v23.41" pointer-events="stroke"/>
+      <path class="cls-6" d="M363.92,170.06l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <rect class="cls-10" x="279.42" y="107.68" width="151.41" height="44.34" pointer-events="all"/>
+    <text class="cls-11" transform="translate(282.21 120.42)"><tspan x="0" y="0">Generate a complete dataset</tspan><tspan x="17.44" y="13.2">by removing columns </tspan><tspan x="23.55" y="26.4">with missing values</tspan></text>
+    <g>
+      <path class="cls-5" d="M363.92,214.62v21.82" pointer-events="stroke"/>
+      <path class="cls-6" d="M363.92,239.06l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+      <g>
+        <path class="cls-5" d="M440.99,196.71h21.82" pointer-events="stroke"/>
+        <path class="cls-6" d="M465.43,196.71l-3.5,1.75.88-1.75-.88-1.75,3.5,1.75Z" pointer-events="all"/>
+      </g>
+    </g>
+    <rect class="cls-10" x="288.88" y="170.62" width="153.66" height="43.54" pointer-events="all"/>
+    <text class="cls-11" transform="translate(304.96 183.62)"><tspan x="0" y="0">Create missing data with </tspan><tspan x="-8.23" y="13.2">MAR, MNAR, MCAR models</tspan><tspan x="20.17" y="26.4">at threshold level</tspan></text>
+    <g>
+      <path class="cls-5" d="M363.92,284.62v17.82" pointer-events="stroke"/>
+      <path class="cls-6" d="M363.92,305.06l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <rect class="cls-10" x="303.01" y="239.06" width="121.82" height="45.56" pointer-events="all"/>
+    <text class="cls-11" transform="translate(314.88 252.99)"><tspan x="0" y="0">Impute each created</tspan><tspan x="4.9" y="13.2" xml:space="preserve"> missingness type </tspan><tspan x="-6.42" y="26.4">dataset with 8 methods</tspan></text>
+    <g>
+      <path class="cls-5" d="M363.92,350.62v19.17" pointer-events="stroke"/>
+      <path class="cls-6" d="M363.92,372.42l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <path class="cls-8" d="M288.88,350.62l11.63-45h148.86l-11.63,45h-148.86Z" pointer-events="all"/>
+    <text class="cls-11" transform="translate(301.86 320.09)"><tspan x="0" y="0">Show error rate using MAPE</tspan><tspan x="17.72" y="13.2">for each method and </tspan><tspan x="14.06" y="26.4">each missingness type</tspan></text>
+    <text class="cls-11" transform="translate(275.92 482.79)"><tspan x="0" y="0">YES</tspan></text>
+    <text class="cls-11" transform="translate(271.37 416.38)"><tspan x="0" y="0">NO</tspan></text>
+    <path class="cls-8" d="M363.92,372.98l70.01,47.5-70.01,47.5-70.01-47.5,70.01-47.5Z" pointer-events="all"/>
+    <text class="cls-11" transform="translate(346.11 401.85)"><tspan x="0" y="0">Propose </tspan><tspan x="-15.59" y="13.2">optimal method</tspan><tspan x="-31.49" y="26.4">based on optimization</tspan><tspan x="8.56" y="39.6">result</tspan></text>
+    <g>
+      <path class="cls-5" d="M292.91,421.11h-49.48v-23.36h-42.94" pointer-events="stroke"/>
+      <path class="cls-5" d="M291.91,486.32l-52.29-.02v-45.84h-45.38" pointer-events="stroke"/>
+      <path class="cls-6" d="M199.29,397.75l3.5-1.75-.88,1.75.88,1.75-3.5-1.75Z" pointer-events="all"/>
+    </g>
+    <g>
+      <path class="cls-5" d="M364.56,467.98l.17,18.33h-126.32" pointer-events="stroke"/>
+      <path class="cls-6" d="M173.5,440.56l3.49-1.75-.87,1.75.88,1.75-3.5-1.75Z" pointer-events="all"/>
+    </g>
+    <rect class="cls-10" x="102.67" y="430.32" width="91.07" height="18.14" pointer-events="all"/>
+    <text class="cls-11" transform="translate(107.18 393.2)"><tspan x="0" y="0">Select imputation</tspan><tspan x="23.84" y="13.2">method</tspan></text>
+    <g>
+      <path class="cls-5" d="M147.62,447.62v17.82" pointer-events="stroke"/>
+      <path class="cls-6" d="M147.62,468.06l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <g>
+      <path class="cls-5" d="M147.62,483.62l-.02,10.04v-2.08,6.8" pointer-events="stroke"/>
+      <path class="cls-6" d="M147.6,501l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <path class="cls-8" d="M86.71,483.62l10-15h111.82l-10,15h-111.82Z" pointer-events="all"/>
+    <text class="cls-11" transform="translate(98.19 479.37)"><tspan x="0" y="0">Imputed data output</tspan></text>
+    <g>
+      <path class="cls-5" d="M147.62,533.52v28.78" pointer-events="stroke"/>
+      <path class="cls-6" d="M147.62,564.92l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <rect class="cls-10" x="86.71" y="501.56" width="121.82" height="31.96" pointer-events="all"/>
+    <text class="cls-11" transform="translate(106.09 514.66)"><tspan class="cls-4" x="0" y="0">V</tspan><tspan class="cls-12" x="7.14" y="0">isualization data</tspan><tspan x="-8.05" y="13.2">and imputation result</tspan></text>
+    <ellipse class="cls-10" cx="147.62" cy="578.8" rx="17.26" ry="13.32" pointer-events="all"/>
+    <text class="cls-11" transform="translate(137.33 581.87)"><tspan x="0" y="0">End</tspan></text>
+    <g>
+      <path class="cls-5" d="M46.18,311.98l.05,206.29,35.29.03" pointer-events="stroke"/>
+      <path class="cls-6" d="M86.15,518.29l-3.5,1.5.88-1.5-.88-1.5,3.5,1.51Z" pointer-events="all"/>
+    </g>
+    <rect class="cls-10" x=".5" y="263.18" width="91.37" height="48.79" pointer-events="all"/>
+    <text class="cls-11" transform="translate(3.54 276.91)"><tspan x="0" y="0">Remove columns</tspan><tspan x="12.54" y="13.2">with missing</tspan><tspan x="26.59" y="26.4">values</tspan></text>
+    <text class="cls-11" transform="translate(108.64 443.09)"><tspan x="0" y="0">Data imputation</tspan></text>
+    <g>
+      <path class="cls-5" d="M147.35,411.2v16.05" pointer-events="stroke"/>
+      <path class="cls-6" d="M147.35,429.88l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <text class="cls-11" transform="translate(311.52 29.56)"><tspan x="0" y="0">Hyperparameter</tspan><tspan x="22.31" y="13.2">Search</tspan></text>
+    <line class="cls-5" x1="291.42" y1="56.7" x2="412.98" y2="57.76"/>
+    <text class="cls-11" transform="translate(389.48 55.3)"><tspan x="0" y="0">YES</tspan></text>
+    <text class="cls-11" transform="translate(291.42 54.7)"><tspan x="0" y="0">NO</tspan></text>
+    <text class="cls-11" transform="translate(291.34 77.09)"><tspan x="0" y="0">Set </tspan><tspan x="-24.16" y="13.2">default values</tspan></text>
+    <g>
+      <path class="cls-5" d="M412.7,57.06v46.54" pointer-events="stroke"/>
+      <path class="cls-6" d="M412.7,107.09l-1.75-3.5,1.75.88,1.75-.88-1.75,3.5Z" pointer-events="all"/>
+    </g>
+    <rect class="cls-10" x="366.18" y="66.14" width="86.07" height="28.08" pointer-events="all"/>
+    <text class="cls-11" transform="translate(398.14 77.09)"><tspan class="cls-1" x="0" y="0">T</tspan><tspan x="5.5" y="0">est </tspan><tspan x="-29.96" y="13.2">hyperparameters</tspan></text>
+    <text class="cls-11" transform="translate(498.23 187.23)"><tspan x="0" y="0">hold </tspan><tspan x="-26.9" y="13.2">removed values</tspan></text>
+    <g>
+      <path class="cls-5" d="M554.12,209.3l-76.65-.04v125.77h-31.17" pointer-events="stroke"/>
+      <path class="cls-6" d="M444,335.03l3.14-1.33-.79,1.33.79,1.33-3.14-1.33Z" pointer-events="all"/>
+    </g>
+  </g>
+  <g>
+    <ellipse class="cls-2" cx="494.91" cy="107.65" rx="7.66" ry="6.47"/>
+    <ellipse class="cls-2" cx="494.52" cy="82.59" rx="7.66" ry="9.34"/>
+    <ellipse class="cls-5" cx="494.65" cy="105.75" rx="11.32" ry="12.08"/>
+    <ellipse class="cls-5" cx="494.72" cy="82.11" rx="11.32" ry="12.08"/>
+    <rect class="cls-9" x="492.41" y="92.94" width="5" height="3.8" transform="translate(989.82 189.67) rotate(180)"/>
+    <rect class="cls-9" x="472.54" y="107.9" width="42.02" height="12.57" transform="translate(987.1 228.38) rotate(180)"/>
+    <rect class="cls-9" x="477.77" y="67.97" width="31.95" height="12.57" transform="translate(987.5 148.51) rotate(180)"/>
+    <line class="cls-7" x1="481.74" y1="81.11" x2="507.88" y2="81.11"/>
+    <line class="cls-7" x1="481.45" y1="107.9" x2="507.59" y2="107.9"/>
+    <rect class="cls-9" x="485.37" y="82.59" width="19.14" height="2.31" transform="translate(989.88 167.5) rotate(180)"/>
+    <circle class="cls-3" cx="494.81" cy="93.92" r=".59"/>
+    <circle class="cls-3" cx="494.81" cy="97.91" r=".59"/>
+    <circle class="cls-3" cx="494.81" cy="101.19" r=".59"/>
+  </g>
+</svg>

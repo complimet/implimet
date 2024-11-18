@@ -76,9 +76,42 @@ imputation <- function(cleaned_df,  method = "optimization", full_search = FALSE
   cleaned_df <- data.frame(cleaned_df, check.names = F)
   table_output <- NULL
   if(method == "optimization") {
-    # perform method comparison table with imputed dataframes
-    out <- method_optimization(cleaned_df, missing_variable_percentage, var_group = var_group, full_search = full_search)
+        # perform method comparison table with imputed dataframes
+        
+    out <- NULL
     
+    compound_only_cleaned.t <- as.data.frame(t(cleaned_df))
+    na.count.sample <- compound_only_cleaned.t %>% summarise_all(~ sum(is.na(.)))
+            
+    na.count.feature <- cleaned_df %>% summarise_all(~ sum(is.na(.)))
+    
+
+    if(length(grep(0,na.count.sample))>=6){
+      
+      out <- method_optimization(cleaned_df, missing_variable_percentage, var_group = var_group, full_search = full_search)
+
+            
+    }else if(length(grep(0,na.count.sample))<6 && length(grep(0,na.count.feature))>=3){
+      
+      out <- method_optimization(cleaned_df, missing_variable_percentage, var_group = var_group, full_search = full_search)
+      
+
+    }else if(length(grep(0,na.count.sample))<6 && length(grep(0,na.count.feature))<3){
+      
+      sample.cutoff <- dim(cleaned_df)[1] *0.8
+      feature.cutoff <- dim(cleaned_df)[2] *0.8
+              
+      sample.cutoff.index <- which(na.count.sample >= sample.cutoff)
+      feature.cutoff.index <- which(na.count.feature >= feature.cutoff)
+              
+             
+      db_data_cleaned_logshift_subset <- cleaned_df[-sample.cutoff.index,]
+              
+
+      out <- method_optimization(db_data_cleaned_logshift_subset, missing_variable_percentage, var_group = var_group, full_search = full_search)
+
+    } 
+            
     # ------------------------------------------------
     # 1. print out a table for imputation methods and errors
     table_output <- out %>% select(missing_type:mape) %>% mutate(mape = round(mape, digits = 3)) %>% 
@@ -112,15 +145,6 @@ imputation <- function(cleaned_df,  method = "optimization", full_search = FALSE
         opt_val <-matched_row$opt_value
       }
       
-    # }else{ # do not add quotation
-    #   miss_type <- readline(prompt="Choose 1 of 3 'MCAR, MAR, MNAR': " )  ## user input
-    #   ## user input
-    #   imputed_method <- readline(prompt="Select 1 of 8 method: \n<minimum, one_fifth_minimum, mean, median, 
-    #                              \nmaximum, KNN, RandomForest, MICE>: " )
-    #   method <- out %>% filter(missing_type == miss_type & method == imputed_method) %>% pull(method)
-    #   opt_val <- out %>% filter(missing_type == miss_type & method == imputed_method) %>% pull(opt_value)
-    # }
-    
     # print out messages
     if (method == "KNN") {
       k_val <- opt_val
@@ -252,21 +276,8 @@ test_all_imputation <- function(full_df, missing_df, missing_type, var_group = N
 #-----------------------------------------------------
 ###### perform data transformation: log transform -> shift all values to positives + 0.01
 log_shift <- function(dataset){
-  #changed by Anu
-  #dataset <- compound_only
-#MCC  log_dataset <- log(dataset)
-  #MCC  print("HELLO")
-  #MCC  print(log_dataset)
-  #MCC  min_val <- abs(min(log_dataset, na.rm = T))
-  #MCC  print(min_val)
-  #MCC  transformed_df <- log_dataset + min_val + 0.01
-  #MCC  print("HELLO2")
   min_val <- abs(min(dataset, na.rm = T))
   log_dataset <- log(dataset + min_val + 0.001)
-  print("HELLO_20123")
-  print(log_dataset)
-  print(min_val)
- #MCC test transformed_df <- log_dataset 
   transformed_df <- dataset  #MCC testing - what if there is no log
   
   return(list(transformed_df, min_val))
@@ -275,8 +286,6 @@ log_shift <- function(dataset){
 
 # reverse data transformation
 reverse_log_shift <- function(dataset, min_val){
-#MCC  log <- dataset - 0.01 - min_val
-#MCC  original_df <- exp(log)
   log_out <- dataset
  #MCC test original_df <- exp(log_out) - 0.001 - min_val
   original_df <- (log_out) #MCC testing - what if there is no log
@@ -289,8 +298,6 @@ add_group_info <- function(imputed_df, group_info){
   if(is.null(group_info) == F){
     imputed_df <- rbind(group_info[, names(imputed_df)], imputed_df)
   }
-  # save the imputed df in current directory
-  write.table(imputed_df, file = "imputed_data.csv", col.names = TRUE, row.names = TRUE, sep = ",", quote = FALSE)
   return(imputed_df)
 }
 
@@ -304,7 +311,6 @@ plot_PCA <- function(df, title){
     pca_df <- df[complete.cases(df), ]  # remove rows with missing values
    
   pca_res <- prcomp(pca_df, scale. = T , center = T)
- # p1 <- fviz_eig(pca_res)
   p2 <- autoplot(pca_res, data = pca_df, alpha = 0.7, shape = 20, scale. = TRUE, label = TRUE, label.size = 2,cex = 0.9,label.vjust=-1) + 
     theme_bw() + theme(plot.title = element_text(hjust = 0.5)) +   ggtitle(title)
   return(p2)
@@ -312,17 +318,9 @@ plot_PCA <- function(df, title){
 
 ##### t-SNE plotting
 plot_tSNE <- function(df, title){
-  #MCC changed to perplexity to 3
- # imputed_df<-subset(df, (!is.na(df[,2])) & (!is.na(df[,3])))
-#  imputed_df <- imputed_df %>% select_if(~ !any(is.na(.))) # select features without missing
-  # 1. filter samples with missing data
+   # 1. filter samples with missing data
   imputed_df <- df[complete.cases(df), ]  # remove rows with missing values
-  # if this is empty then try removing columns instead MCC adding
-  #   if (dim(full_df)[1] == 0){
-  #      full_df <- cleaned_df[ , colSums(is.na(cleaned_df))==0]  #MCC cleaning columns  
-  
-   #MCC title <- paste(title, " \n(perplexity = 3,theta = 0.5,momentum = 0.5,normalize = T,\nfinal_momentum = 0.8,eta = 200,exaggeration_factor = 12)",sep="")
-  #tSNE_fit <- imputed_df %>% select_if(~ !any(is.na(.))) %>% scale() %>% Rtsne(.,normalize = T, perplexity = 3)
+ 
   tSNE_fit <- imputed_df %>% select_if(~ !any(is.na(.))) %>% scale() %>% Rtsne(.,normalize = T, perplexity = 1)
   tSNE_df <- tSNE_fit$Y %>% as.data.frame(row.names = rownames(df)) %>% rename(tSNE1="V1", tSNE2="V2")
   p <- tSNE_df %>% ggplot(aes(x = tSNE1,y = tSNE2))+ geom_point(cex = 0.9) + theme(aspect.ratio=1)  +theme_bw() + theme(plot.title = element_text(hjust = 0.5)) +  ggtitle(title)
