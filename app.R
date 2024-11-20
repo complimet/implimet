@@ -8,8 +8,8 @@ automatic_install_packages = function(){
                           "tidyverse","cluster","factoextra","dendextend",
                           "RColorBrewer","gplots","viridis","dplyr","ggplot2",
                           "DT","Hmisc","reshape2","moments","ipc","future",
-                          "promises","impute","missRanger","mice","ggfortify",
-                          "Rtsne","magrittr","tidyr","heatmap3","foreach","svglite")
+                          "promises","missRanger","mice","ggfortify",
+                          "Rtsne","magrittr","tidyr","heatmap3","foreach","svglite","impute")
   
   for(p in requiredPackages){
     if(!require(p,character.only = TRUE)){
