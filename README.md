@@ -17,7 +17,7 @@ The latest code and offical ImpLiMet release is published online at https://gith
 
 # Contact
 
-For additional information and contacting the authors, please consult the ImpLiMet web page at ((https://complimet.ca/shiny/implimet/)). To report an error or file a request, please send an email to: ldomic@uottawa.ca.
+For additional information and contacting the authors, please consult the ImpLiMet web page at https://complimet.ca/shiny/implimet/. To report an error or file a request, please send an email to: ldomic@uottawa.ca.
 
 # Documentation
 
