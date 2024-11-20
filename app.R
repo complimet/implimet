@@ -2,10 +2,44 @@
 # Shiny app
 # By Anu Surendra
 
+
+automatic_install_packages = function(){
+  requiredPackages = c("shiny","shinydashboard","shinyWidgets","waiter",
+                          "tidyverse","cluster","factoextra","dendextend",
+                          "RColorBrewer","gplots","viridis","dplyr","ggplot2",
+                          "DT","Hmisc","reshape2","moments","ipc","future",
+                          "promises","impute","missRanger","mice","ggfortify",
+                          "Rtsne","magrittr","tidyr","heatmap3","foreach","svglite")
+  
+  for(p in requiredPackages){
+    if(!require(p,character.only = TRUE)){
+      install.packages(p)
+    }
+  }
+  
+}
+
+getCurrentFileLocation <-  function()
+{
+  this_file <- commandArgs() %>% 
+    tibble::enframe(name = NULL) %>%
+    tidyr::separate(col=value, into=c("key", "value"), sep="=", fill='right') %>%
+    dplyr::filter(key == "--file") %>%
+    dplyr::pull(value)
+  if (length(this_file)==0)
+  {
+    this_file <- rstudioapi::getSourceEditorContext()$path
+  }
+  return(dirname(this_file))
+}
+
+automatic_install_packages()
+
 library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
 library(waiter)
+library(svglite)
 library(tidyverse)
 library(cluster)
 library(factoextra)
@@ -24,15 +58,12 @@ library(future)
 library(promises)
 plan(multicore) 
 
-source("/var/www/compLiMet/public_html/shiny/implimet/src/app_general_function.r")
-source("/var/www/compLiMet/public_html/shiny/implimet/src/app_imputation_function.r")
-source("/var/www/compLiMet/public_html/shiny/implimet/src/app_generate_missing.r")
- #source("C:/Project/Complimet/implimet/src/app_general_function.r")
- #source("C:/Project/Complimet/implimet/src/app_imputation_function.r")
- #source("C:/Project/Complimet/implimet/src/app_generate_missing.r")
+main.dir <- getCurrentFileLocation()
+setwd(main.dir)
 
-
-
+source("./src/app_general_function.r")
+source("./src/app_imputation_function.r")
+source("./src/app_generate_missing.r")
 # UI
 sidebar <- dashboardSidebar(
     sidebarMenu(
@@ -155,20 +186,6 @@ body <- dashboardBody(
             box(
                 column(
                     12,
-                    #     tags$b(h3("Preparing your data for Implimet")),
-                    #      br(),
-                    #      p(
-                    #        h4("Required input variables")
-                    #      ),
-                    #      p(
-                    #       tags$figure(
-                    #        align = "left",
-                    #        tags$img(src = "requiredinput.png",
-                    #                 width = "50%",
-                    #                 height = "50%",
-                    #                 alt = "")
-                    #      )
-                    #      ),
                     br(),
                     p(
                         h4("Input data format and examples as a .CSV file")
@@ -204,35 +221,7 @@ body <- dashboardBody(
                         )
                     ),
                     br(),
-                    #        p(
-                    #          h4("Outputs")
-                    #        ),
-                    #        p(
-                    #        tags$ol(
-                    #              tags$li("Imputed dataset for download"),
-                    #
-                    #        tags$li("Table output (if optimization is chosen) example is shown below. If the user chooses the default imputed output data, the input dataset is imputed with RF with tree value = 250 as output (yellow highlight)."),
-                    #        br(),
-                    #        p(
-                    #         tags$figure(
-                    #          align = "left",
-                    #          tags$img(src = "output.png",
-                    #                   width = "50%",
-                    #                   height = "50%",
-                    #                   alt = "")
-                    #          )
-                    #        ),
-                    #        tags$li("PCA, t-SNE plots"),
-
-
-                    #     )
-                    #    ),
-
-
-
-
-
-
+               
                     h3("Sample Data"),
                     tags$ol(
                         tags$li(
@@ -492,9 +481,7 @@ ui <- dashboardPage(
     skin = "black",
     tags$head(
         tags$title("Implimet"),
-        includeHTML("./googleanalytics.html"),
-        includeCSS("/var/www/compLiMet/public_html/shiny/implimet/www/complimetGUI.css")
-       #includeCSS("C:/Project/Complimet/implimet/www/complimetGUI.css")
+        includeCSS(paste(main.dir,"/www/complimetGUI.css",sep=""))
     )
 )
 
@@ -503,8 +490,10 @@ server <- function(input, output, session) {
 
     options(shiny.maxRequestSize=50*1024^2) 
     if (!interactive()) sink(stderr(), type = "output")
+  main.dir <- getCurrentFileLocation()
+   ifelse(!dir.exists(file.path(paste(main.dir,"/www/tmp/",sep=""))), dir.create(file.path(paste(main.dir,"/www/tmp/",sep=""))), FALSE)
     
-   w1 <- Waiter$new( id = "imputeDiv",
+    w1 <- Waiter$new( id = "imputeDiv",
             html = spin_fading_circles())
 			
 			
@@ -564,21 +553,16 @@ server <- function(input, output, session) {
 
         ts <- format(Sys.time(), format = "%m%d%Y%H%M%S")
 
-       dir.create(file.path("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts), showWarnings = FALSE)
-      #       dir.create(file.path("C:/Project/Complimet/implimet/www/tmp/", ts), showWarnings = FALSE)
+        dir.create(file.path("./www/tmp/", ts), showWarnings = FALSE)
 
-
-        filename <- paste("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts, "/", ts, "_data.csv", sep = "")
-            #filename <- paste("C:/Project/Complimet/implimet/www/tmp/",ts,"/",ts,"_data.csv",sep="")
-
+        filename <- paste("./www/tmp/", ts, "/", ts, "_data.csv", sep = "")
+    
         cleanedFilename <- paste(ts, "_cleaned_data.csv", sep = "")
         file.copy(input$imputationInput$datapath, filename, overwrite = TRUE)
 
 
         variable_groups <- input$vgroup
-        print("HELLO6787")
         compound_missing <- ifelse(tolower(input$fmt) == tolower("Don't remove any features"), 110 / 100, as.numeric(input$fmt) / 100) # column
-        print("HELLO6799")
         sample_missing <- ifelse(tolower(input$smt) == tolower("Don't remove any samples"), 110 / 100, as.numeric(input$smt) / 100) # row
         raw_data <- read_in(filename, variable_groups)[[1]]
         compound_only <- read_in(filename, variable_groups)[[2]]
@@ -624,9 +608,7 @@ server <- function(input, output, session) {
             }
         )
 
-        unlink(paste("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts, "/*", sep = ""), recursive = T)
-
-        # unlink(paste("C:/Project/Complimet/implimet/www/tmp/", ts,"/*", sep=""), recursive = T)
+        unlink(paste("./www/tmp/", ts, "/*", sep = ""), recursive = T)
     })
 
 
@@ -648,13 +630,10 @@ server <- function(input, output, session) {
 
         ts <- format(Sys.time(), format = "%m%d%Y%H%M%S")
 
-      dir.create(file.path("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts), showWarnings = FALSE)
+        dir.create(file.path("./www/tmp/", ts), showWarnings = FALSE)
 
-       filename <- paste("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts, "/", ts, "_data.csv", sep = "")
-     #       dir.create(file.path("C:/Project/Complimet/implimet/www/tmp/", ts), showWarnings = FALSE)
-
-      #      filename <- paste("C:/Project/Complimet/implimet/www/tmp/",ts,"/",ts,"_data.csv",sep="")
-
+        filename <- paste("./www/tmp/", ts, "/", ts, "_data.csv", sep = "")
+   
         cleanedFilename <- paste(ts, "_cleaned_data.csv", sep = "")
         file.copy(input$imputationInput$datapath, filename, overwrite = TRUE)
 
@@ -662,11 +641,9 @@ server <- function(input, output, session) {
         variable_groups <- input$vgroup
 
         compound_missing <- ifelse(tolower(input$fmt) == tolower("Don't remove any features"), 110 / 100, as.numeric(input$fmt) / 100) # column
-        print("HELLO5650")
-        print(compound_missing)
-        print(input$fmt)
+
         sample_missing <- ifelse(tolower(input$smt) == tolower("Don't remove any samples"), 110 / 100, as.numeric(input$smt) / 100) # row
-        print(sample_missing)
+        
         raw_data <- read_in(filename, variable_groups)[[1]]
         compound_only <- read_in(filename, variable_groups)[[2]]
         transformed_compound_only <- log_shift(compound_only)[[1]]
@@ -689,8 +666,7 @@ server <- function(input, output, session) {
             }
         )
 
-        unlink(paste("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts, "/*", sep = ""), recursive = T)
-       #      unlink(paste("C:/Project/Complimet/implimet/www/tmp/", ts,"/*", sep=""), recursive = T)
+        unlink(paste("./www/tmp/", ts, "/*", sep = ""), recursive = T)
     })
 
 
@@ -699,12 +675,10 @@ server <- function(input, output, session) {
 
         ts <- format(Sys.time(), format = "%m%d%Y%H%M%S")
 
-        dir.create(file.path("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts), showWarnings = FALSE)
-       #       dir.create(file.path("C:/Project/Complimet/implimet/www/tmp/", ts), showWarnings = FALSE)
+        dir.create(file.path("./www/tmp/", ts), showWarnings = FALSE)
 
-        filename <- paste("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts, "/", ts, "_data.csv", sep = "")
-        #    filename <- paste("C:/Project/Complimet/implimet/www/tmp/",ts,"/",ts,"_data.csv",sep="")
-
+        filename <- paste("./www/tmp/", ts, "/", ts, "_data.csv", sep = "")
+  
         cleanedFilename <- paste(ts, "_cleaned_data.csv", sep = "")
         file.copy(input$imputationInput$datapath, filename, overwrite = TRUE)
 
@@ -712,10 +686,9 @@ server <- function(input, output, session) {
         variable_groups <- input$vgroup
 
         compound_missing <- ifelse(tolower(input$fmt) == tolower("Don't remove any features"), 110 / 100, as.numeric(input$fmt) / 100) # column
-        print("HELLO9678")
-        print(compound_missing)
+
         sample_missing <- ifelse(tolower(input$smt) == tolower("Don't remove any samples"), 110 / 100, as.numeric(input$smt) / 100) # row
-        print(sample_missing)
+
         raw_data <- read_in(filename, variable_groups)[[1]]
         compound_only <- read_in(filename, variable_groups)[[2]]
         transformed_compound_only <- log_shift(compound_only)[[1]]
@@ -736,9 +709,7 @@ server <- function(input, output, session) {
             }
         )
 
-        unlink(paste("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts, "/*", sep = ""), recursive = T)
-
-         #    unlink(paste("C:/Project/Complimet/implimet/www/tmp/", ts,"/*", sep=""), recursive = T)
+        unlink(paste("./www/tmp/", ts, "/*", sep = ""), recursive = T)
     })
 
     observeEvent(input$stopIMPLIMET, {
@@ -757,56 +728,32 @@ server <- function(input, output, session) {
         
         fut <- NULL
         
-        
-    
-    
         ts <- format(Sys.time(), format = "%m%d%Y%H%M%S")
-        #    dir.create(file.path("C:/Project/Complimet/implimet/tmp/", ts), showWarnings = FALSE)
-        #    dataValues$mainDir <- paste0("C:/Project/Complimet/implimet/tmp/", ts)
+     
+       dir.create(file.path("./www/tmp/", ts), showWarnings = FALSE)
+       dataValues$mainDir <- paste0("./www/tmp/", ts)
 
-        #    filename <- paste("C:/Project/Complimet/implimet/tmp/",ts,"/",ts,"_data.csv",sep="")
-
-       dir.create(file.path("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts), showWarnings = FALSE)
-       dataValues$mainDir <- paste0("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts)
-
-       filename <- paste("/var/www/compLiMet/public_html/shiny/implimet/www/tmp/", ts, "/", ts, "_data.csv", sep = "")
-
-          #dir.create(file.path("C:/Project/Complimet/implimet/www/tmp/", ts), showWarnings = FALSE)
-            #dataValues$mainDir <- paste0("C:/Project/Complimet/implimet/www/tmp/", ts)
-
-            #filename <- paste("C:/Project/Complimet/implimet/www/tmp/",ts,"/",ts,"_data.csv",sep="")
-
+       filename <- paste("./www/tmp/", ts, "/", ts, "_data.csv", sep = "")
 
         cleanedFilename <- paste(ts, "_cleaned_data.csv", sep = "")
         dataValues$ts <- ts
         dataValues$cleanedFilename <- cleanedFilename
         file.copy(input$imputationInput$datapath, filename, overwrite = TRUE)
 
-
-
-        print(filename)
         variable_groups <- input$vgroup
-        print(variable_groups)
+
 
         compound_missing <- ifelse(tolower(input$fmt) == tolower("Don't remove any features"), 110 / 100, as.numeric(input$fmt) / 100) # column
         sample_missing <- ifelse(tolower(input$smt) == tolower("Don't remove any samples"), 110 / 100, as.numeric(input$smt) / 100) # row
-
-        print("HELLO94746")
-        print(compound_missing)
-        print(sample_missing)
-        # optimized_method <- input$imputationAlgorithm
-
 
         # data input
         raw_data <- read_in(filename, variable_groups)[[1]]
 
 
 
-        print("HELLO23")
         # data input
         compound_only <- read_in(filename, variable_groups)[[2]]
         dataValues$compoundOnly <- compound_only
-        print(compound_only)
 
         # variable groups
         group <- read_in(filename, variable_groups)[[3]]
@@ -823,18 +770,8 @@ server <- function(input, output, session) {
         dataValues$db_data_cleaned <- compound_only_cleaned
 
         dataValues$compoundOnly <- compound_only_cleaned # MCC added for missing rows fix April11 2024
-        # MCC keep them for now dataValues$compoundOnly[is.na(dataValues$compoundOnly)] <- 0
 
-        print(input$imputationAlgorithm)
-
-
-        # MCC   if(input$logshift){
-        # MCC      df_logshift <- log_shift(dataValues$db_data_cleaned)
-        # MCC      dataValues$minVal <- df_logshift[[2]]
-        # MCC      dataValues$db_data_cleaned_logshift <- df_logshift[[1]]
-        # MCC   }else{
         dataValues$db_data_cleaned_logshift <- dataValues$db_data_cleaned
-        # MCC   }
 
 
         if (input$imputationAlgorithm == "min") {
@@ -870,25 +807,16 @@ server <- function(input, output, session) {
             dataValues$algo <- "MICE"
             dataValues$imputedDataframe <- imputed_df[[1]]
         } else {
-            # janice added the "full_search" checkbox here
-           # fut <- future({
-            
-              imputed_df <- imputation(cleaned_df = dataValues$db_data_cleaned_logshift, full_search = input$full_search_in, missing_variable_percentage = compound_missing, method = "optimization", var_group = dataValues$groups)
-              dataValues$algo <- "Algorithm Optimization"
-              dataValues$imputedDataframe <- imputed_df[[1]]
-              dataValues$tableoutput <- imputed_df[[2]]
-              dataValues$algo <- imputed_df[[3]]
+            imputed_df <- imputation(cleaned_df = dataValues$db_data_cleaned_logshift, full_search = input$full_search_in, missing_variable_percentage = compound_missing, method = "optimization", var_group = dataValues$groups)
+            dataValues$algo <- "Algorithm Optimization"
+            dataValues$imputedDataframe <- imputed_df[[1]]
+            dataValues$tableoutput <- imputed_df[[2]]
+            dataValues$algo <- imputed_df[[3]]
               
-              print("HELLO1438751384")
-
-           #})
-            
+     
             tableoutput <- dataValues$tableoutput
             
             
-
-
-
             updateTextInput(session, "condition",
                 label = "", value = "1"
             )
@@ -919,7 +847,6 @@ server <- function(input, output, session) {
         reversed_imputed_df <- reverse_log_shift(dataValues$imputedDataframe, min_val = dataValues$minVal)
         returned_df <- add_group_info(reversed_imputed_df, dataValues$groups)
 
-        print("HELLO THERE")
 
         dataValues$reversed_imputed_df <- returned_df
 
@@ -942,29 +869,11 @@ server <- function(input, output, session) {
         )
 
 
-
-        # pca
-
-        print("HELLO THERE 334")
-        print(dim(dataValues$compoundOnly)[1])
-        print(dim(dataValues$compoundOnly)[2])
-        print(head(dataValues$compoundOnly))
-
-
         all.cleaned.df.samples <- dataValues$compoundOnly[complete.cases(dataValues$compoundOnly), ]
         all.cleaned.df.features <- as.data.frame(t(dataValues$compoundOnly))
-        print(head(all.cleaned.df.features))
-
+  
         all.cleaned.df.features <- all.cleaned.df.features[complete.cases(all.cleaned.df.features), ]
 
-        print(head(all.cleaned.df.samples))
-        print(head(all.cleaned.df.features))
-
-        print(dim(all.cleaned.df.samples)[1] > 2)
-        print(dim(all.cleaned.df.samples)[2] > 2)
-        print(dim(all.cleaned.df.features)[1] > 2)
-        print(dim(all.cleaned.df.features)[2] > 2)
-		
 		
         h1 <- NULL
 		    h2 <- NULL
@@ -985,59 +894,16 @@ server <- function(input, output, session) {
 
             ggsave(file = paste(dataValues$mainDir, "/", dataValues$ts, "_pcaCleanedSamples.svg", sep = ""), plot = dataValues$pcaRaw, device = "svg", dpi = "print", width = 950, height = 950, units = "px", limitsize = F, scale = 4)
 
-            # svg(file = paste(dataValues$mainDir,"/",dataValues$ts, "_pcaCleanedSamples.svg", sep=""),   # The directory you want to save the file in
-            # width = 950, # The width of the plot in inches
-            # height = 950)
-
-            # print(dataValues$pcaRaw)
-
-
-            # dev.off()
-
-
             ggsave(file = paste(dataValues$mainDir, "/", dataValues$ts, "_pcaImputedSamples.svg", sep = ""), plot = dataValues$pcaImputed, device = "svg", dpi = "print", width = 950, height = 950, units = "px", limitsize = F, scale = 4)
 
-            # svg(file = paste(dataValues$mainDir,"/",dataValues$ts, "_pcaImputedSamples.svg", sep=""),   # The directory you want to save the file in
-            # width = 950, # The width of the plot in inches
-            # height = 950)
-
-            # print(dataValues$pcaImputed)
 
 
-            # dev.off()
-
-
-
-            # tsne:
-            #    tsne_raw <- plot_tSNE(dataValues$compoundOnly, paste("tSNE original data"))
-            #    tsne_imputed <- plot_tSNE(reversed_imputed_df, paste("tSNE",dataValues$algo,"imputation"))
-            #    dataValues$tsneRaw <- tsne_raw
-            #    dataValues$tsneImputed <- tsne_imputed
-
-            # or pca but of features
             tsne_raw <- plot_PCA(t(dataValues$compoundOnly), paste("Cleaned data"))
             tsne_imputed <- plot_PCA(t(reversed_imputed_df), paste("", dataValues$algo, "imputation"))
             dataValues$tsneRaw <- tsne_raw
             dataValues$tsneImputed <- tsne_imputed
 
-            # works hist_raw <- plot_histogram(dataValues$compoundOnly, "Histogram Original data before imputation")
-            # works hist_imputed <- plot_histogram(reversed_imputed_df,  "Histogram Data after imputation")
-            # works     dataValues$clustRaw <- hist_raw
-            # works     dataValues$clustImputed <- hist_imputed
-
-
-
             ggsave(file = paste(dataValues$mainDir, "/", dataValues$ts, "_pcaCleanedFeatures.svg", sep = ""), plot = dataValues$tsneRaw, device = "svg", dpi = "print", width = 950, height = 950, units = "px", limitsize = F, scale = 4)
-
-            # svg(file = paste(dataValues$mainDir,"/",dataValues$ts, "_pcaCleanedFeatures.svg", sep=""),   # The directory you want to save the file in
-            # width = 950, # The width of the plot in inches
-            # height = 950)
-
-            # print(dataValues$tsneRaw)
-
-
-            # dev.off()
-
 
             compound_only.scale <- scale(dataValues$compoundOnly)
 
@@ -1061,12 +927,7 @@ server <- function(input, output, session) {
                 ggtitle("Cleaned data") +
                 xlab("Scaled Feature Values") +
                 xlim(hist.x.min, hist.x.max) +
-                # ylim(hist.y.min, hist.y.max) +
                 theme_classic()
-            #+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-            
-            print("HELLO24385723")
-            print(length(h1))
             
 
 
@@ -1076,12 +937,7 @@ server <- function(input, output, session) {
                 ggtitle(paste(dataValues$algo, "imputation")) +
                 xlab("Scaled Feature Values") +
                 xlim(hist.x.min, hist.x.max) +
-                # ylim(hist.y.min, hist.y.max) +
                 theme_classic()
-            #+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-
-
 
 
 
@@ -1114,19 +970,6 @@ server <- function(input, output, session) {
 
 
 
-            # h3 <- ggplot(data.m.skewness, aes(x = features, y = skewness)) +
-            #     geom_bar(fill = "#1f4caf", stat = "identity") +
-            #     ggtitle("Skewness of Raw Data") + ylim(skewness.y.min,skewness.y.max) +
-            #     theme_bw() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-
-
-            # h4 <-  ggplot(data.m.imputed.skewness, aes(x = features, y = skewness)) +
-            #       geom_bar(fill = "#FFA500", stat = "identity") +
-            #       ggtitle("Skewness of Imputed Data") +  ylim(skewness.y.min,skewness.y.max) +
-            #       theme_bw() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-
             h3 <- ggplot(melt(data.skewness), aes(x = features, y = value, fill = variable)) +
                 geom_bar(stat = "identity", color = "black", position = position_dodge(), width = 0.8) +
                 ggtitle("Skewness") +
@@ -1136,13 +979,6 @@ server <- function(input, output, session) {
                 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.title = element_blank())
 
 
-            # h5 <- ggplot(data.m.kurtosis, aes(x = features, y = kurtosis)) +
-            #      geom_bar(fill = "#1f4caf", stat = "identity") +
-            #      ggtitle("kurtosis of Raw Data") +  ylim(kurtosis.y.min,kurtosis.y.max) +
-            #      theme_bw() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-
-
             h5 <- ggplot(melt(data.kurtosis), aes(x = features, y = value, fill = variable)) +
                 geom_bar(stat = "identity", color = "black", position = position_dodge(), width = 0.8) +
                 ggtitle("kurtosis") +
@@ -1150,19 +986,6 @@ server <- function(input, output, session) {
                 scale_fill_manual(values = c("#1f4caf", "#FFA500")) +
                 theme_bw() +
                 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), legend.title = element_blank())
-
-
-            # h6 <- ggplot(data.m.imputed.kurtosis, aes(x = features, y = kurtosis)) +
-            #      geom_bar(fill = "#FFA500", stat = "identity") +
-            #      ggtitle("kurtosis of Imputed Data") +  ylim(kurtosis.y.min,kurtosis.y.max) +
-            #      theme_bw() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-
-
-            
-  
-
-            
 
 
 
@@ -1178,28 +1001,11 @@ server <- function(input, output, session) {
             ggsave(file = paste(dataValues$mainDir, "/", dataValues$ts, "_skewnessFeatures.svg", sep = ""), plot = h3, device = "svg", dpi = "print", width = 950, height = 950, units = "px", limitsize = F, scale = 4)
 
 
-            # output$skewnessImputed <- renderPlot({
-            #  h4
-            # }, res = 96)
-
-
             ggsave(file = paste(dataValues$mainDir, "/", dataValues$ts, "_kurtosisFeatures.svg", sep = ""), plot = h5, device = "svg", dpi = "print", width = 950, height = 950, units = "px", limitsize = F, scale = 4)
-
-            # output$kurtosisImputed <- renderPlot({
-            #  h6
-            # }, res = 96)
-
-
-
-
-
-
 
             ggsave(file = paste(dataValues$mainDir, "/", dataValues$ts, "_pcaImputedFeatures.svg", sep = ""), plot = dataValues$tsneImputed, device = "svg", dpi = "print", width = 950, height = 950, units = "px", limitsize = F, scale = 4)
         }
-		
-        print("HELLO98438932")
-        print(length(h1))
+
         
         updateTextInput(session, "visualPlotDiv",
                 label = "", value = "1"
@@ -1216,8 +1022,6 @@ server <- function(input, output, session) {
            res = 96
         )
             
-        #waitress1$close()
-            
             
         output$histImputed <- renderPlot(
           {
@@ -1229,7 +1033,6 @@ server <- function(input, output, session) {
           },
           res = 96
         )
-        #waitress2$close()
 
 
         output$skewnessRaw <- renderPlot(
@@ -1243,8 +1046,7 @@ server <- function(input, output, session) {
           },
           res = 96
         )
-        #waitress3$close()
-         
+
         
         output$kurtosisRaw <- renderPlot(
           {
@@ -1257,8 +1059,7 @@ server <- function(input, output, session) {
           },
           res = 96
         )
-        #waitress4$close()
-         
+
         
         output$pcaRaw <- renderPlot(
           {
@@ -1269,8 +1070,7 @@ server <- function(input, output, session) {
           },
           res = 96
         )
-        #waitress5$close()
-        
+
         
         output$pcaImputed <- renderPlot( 
           {
@@ -1282,8 +1082,7 @@ server <- function(input, output, session) {
           },
           res = 96
         )
-        #waitress6$close()
-        
+       
         
         output$tsneRaw <- renderPlot(
           {
@@ -1295,8 +1094,7 @@ server <- function(input, output, session) {
           },
           res = 96
         )
-        #waitress6$close()
-            
+
             
         output$tsneImputed <- renderPlot(
           {
@@ -1308,8 +1106,7 @@ server <- function(input, output, session) {
           },
           res = 96
         )
-        #waitress8$close()
-        
+
         
         if(length(h1)>0 && length(h2)>0 && length(h3)>0 && length(h5)>0 && length(dataValues$pcaRaw)>0 && length(dataValues$pcaImputed)>0 && length(dataValues$tsneRaw)>0 && length(dataValues$tsneImputed)>0){
           
@@ -1318,63 +1115,6 @@ server <- function(input, output, session) {
           )
         
         }
-
-
-
-
-
- 
-         
-
-
-
-
-        # svg(file = paste(dataValues$mainDir,"/",dataValues$ts, "_pcaImputedFeatures.svg", sep=""),   # The directory you want to save the file in
-        # width = 950, # The width of the plot in inches
-        # height = 950)
-
-        # print(dataValues$tsneImputed)
-
-
-        # dev.off()
-
-
-        # works 	  output$clustRaw <- renderPlot({
-        # works 	    for (col in names(dataValues$clustRaw)) {
-        # works 	      print(dataValues$clustRaw[[col]])
-        # works    #works 	    }
-        # works    }, res = 96)
-
-        # works     png(file = paste(dataValues$mainDir,"/",dataValues$ts, "_HistogramRaw.png", sep=""),   # The directory you want to save the file in
-        # works    width = 950, # The width of the plot in inches
-        # works    height = 950)
-
-        # print(dataValues$clustRaw)
-        # works    for (col in names(dataValues$clustRaw)) {
-        # works      print(dataValues$clustRaw[[col]])
-        # works     }
-
-        # works     dev.off()
-
-
-        # works    output$clustImputed <- renderPlot({
-        # works     for (col in names(dataValues$clustRaw)) {
-        # works        print(dataValues$clustImputed[[col]])
-        # works      }
-        # works   }, res = 96)
-
-
-        # works    png(file = paste(dataValues$mainDir,"/",dataValues$ts, "_HistogramImputed.png", sep=""),   # The directory you want to save the file in
-        # works    width = 950,
-        # works     height = 1000)
-
-        #    print(plot_histogram(reversed_imputed_df, paste("Histogram",dataValues$algo,"imputation")))
-        # works    for (col in names(dataValues$clustImputed)) {
-        # works       print(dataValues$clustImputed[[col]])
-        # works     }
-
-        # works    dev.off()
-
 
 
 
