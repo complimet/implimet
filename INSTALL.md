@@ -24,4 +24,4 @@ All scripts for ImpLiMet are written in R and are located in src or www folders.
 
 ImpLiMet requires several R packages that are available on CRAN. All required packages can be installed using this command:
 
-install.packages(c("shiny","shinydashboard","shinyWidgets","tidyverse","cluster","factoextra","dendextend","RColorBrewer","gplots","viridis","dplyr","ggplot2","DT","Hmisc","magrittr","impute","missRanger","mice","factoextra","ggfortify","foreach","Rtsne","magrittr","dplyr","tidyr","heatmap3"))
+install.packages(c("shiny","shinydashboard","shinyWidgets","tidyverse","cluster","factoextra","dendextend","RColorBrewer","gplots","viridis","dplyr","ggplot2","DT","Hmisc","magrittr","missRanger","mice","factoextra","ggfortify","foreach","Rtsne","magrittr","dplyr","tidyr","heatmap3","impute"))
