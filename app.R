@@ -248,7 +248,7 @@ body <- dashboardBody(
                     div(
                         id = "imputeDiv",
                         useWaiter(),
-                        span(class="btn btn-default action-button btn-warning shiny-bound-input", style = "float:right;padding:10px 80px 10px 80px;display: inline-block;color: #fff;", a("User Manual", href = "Manual_August2024_TabAnalysis.pdf", target = "_blank",style="font-family: Montserrat;color: #fff;")),
+                        span(class="btn btn-default action-button btn-warning shiny-bound-input", style = "float:right;padding:10px 80px 10px 80px;display: inline-block;color: #fff;", a("User Manual", href = "Manual_Nov2024.pdf", target = "_blank",style="font-family: Montserrat;color: #fff;")),
                         h2("Step 1"),
                         checkboxInput("vgroup", "This box must be selected prior to data upload if input includes information about multiple feature measurement groups (see download sample data for information about the required input format).", value = F),
                         p(
