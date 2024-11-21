@@ -323,6 +323,9 @@ body <- dashboardBody(
                         br(),
                         conditionalPanel(
                             condition = "input.condition == 1",
+			    p(
+                              tags$b("Orange label indicates the minimal MAPE value across all tests and the method used for the imputation following this optimization. Blue label indicates the minimal average of MAPE values for the three missingness types. If this imputation method is preferred please select it and run ImpLiMet.")
+                            ),
                             DTOutput("table")
                         )
                     )
@@ -816,31 +819,68 @@ server <- function(input, output, session) {
      
             tableoutput <- dataValues$tableoutput
             
+             avg.tableoutput <- apply(as.data.frame(tableoutput[,-1]),2,function(x){
+              mean(as.numeric(gsub("\\s.*","",x,perl=T)))
+              
+            })
+            
+          
+            avg.tableoutput <- c("Average",round(avg.tableoutput,3))
+            tableoutput <- rbind(tableoutput,avg.tableoutput)
+            dataValues$tableoutput <- tableoutput
+            
             
             updateTextInput(session, "condition",
                 label = "", value = "1"
             )
-
-
+            
+      
 
             coloured_colored <- which(colnames(tableoutput) == dataValues$algo)
+            
+            algo2 <- min(as.numeric(tableoutput[4,-1]))
+            coloured_colored2 <- which(tableoutput[4,-1] == algo2)
+            
+            algo3 <- NULL
+            
+            if(coloured_colored>6){
+              
+              algo3 <- min(as.numeric(gsub("\\s.*","",unlist(tableoutput[,coloured_colored]),perl=T)))
+              
+            }else{
+              
+              algo3 <- min(as.numeric(unlist(tableoutput[,coloured_colored])))
+            }
+            
+            coloured_colored3 <- which(tableoutput[,coloured_colored] == algo3)
 
+            
             updateTextInput(session, "tableCol",
                 label = "", value = coloured_colored
             )
-
-
+            
+            updateTextInput(session, "tableCol2",
+                            label = "", value = coloured_colored2
+            )
+            
+            updateTextInput(session, "tableCol3",
+                            label = "", value = coloured_colored3-1
+            )
+            
 
             output$table <- renderDataTable(
-                datatable(tableoutput, options = list(
-                    pageLength = 3, dom = "t", initComplete = JS(
+                datatable(as.data.frame(tableoutput), options = list(
+                    pageLength = 4, dom = "t", initComplete = JS(
                         "function(settings, json) {",
-                        "$(this.api().table().columns().header()[$('#tableCol').val()]).css({'background-color': '#F39C12', 'color': 'white'});",
+                        "$(this.api().table().columns().header()[$('#tableCol').val()]).css({'background-color': '#F39C12', 'color': 'white'});
+                         $(this.api().table().cell(3,$('#tableCol').val()).node()).css({'background-color': '#1f4caf', 'color': 'white'});
+                         $(this.api().table().cell($('#tableCol3').val(),$('#tableCol').val()).node()).css({'background-color': '#F39C12', 'color': 'white'});
+                        ",
                         "}"
                     )
                 ), escape = FALSE)
-            )
-        }
+            )        
+	}
 
 
         # reverse transformation
