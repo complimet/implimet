@@ -72,7 +72,7 @@ sidebar <- dashboardSidebar(
             br(),
             tags$figure(
                 tags$img(
-                    src = "logo_only.png", # PLACEHOLDER FROM FLATICON -- original logo to be made
+                    src = "logo_only.png", # 
                     width = 100,
                     alt = ""
                 ),
@@ -262,15 +262,12 @@ body <- dashboardBody(
                         textAreaInput("caption_input", "", width = "900px", rows = 4),
                         h2("Step 2"),
 
-                        # numericInput("smt","Remove samples with the selected % of missing values", 100, min = 10, max = 100, step= 10,width = "50%"),
                         selectInput("smt", "Remove samples with the specified % of missing values", selected = "Don't remove any samples", c("Don't remove any samples", seq(10, 100, 10)), width = "50%"),
 
-                        # numericInput("fmt","Remove features with the selected % of missing values",100,min = 10, max = 100, step= 10,width = "50%"),
                         selectInput("fmt", "Remove features with the specified % of missing values", selected = "Don't remove any features", c("Don't remove any features", seq(10, 100, 10)), width = "50%"),
                         textAreaInput("caption", "", width = "900px", rows = 4),
                         downloadButton("export_btn_cleanedData", "Cleaned Data"),
 
-                        # MCC     checkboxInput("logshift","Log Shift",value = F),
                         h2("Step 3"),
                         p(
                             "Select imputation method (Note: a minimum of 6 samples or 3 features without missing values is required for the full optimization option). Final results are graphically represented in the Visualization tab above."
@@ -308,7 +305,7 @@ body <- dashboardBody(
                             condition = "input.imputationAlgorithm == 'optimization'",
                             checkboxInput("full_search_in", "full parameter search (slow for large dataset)", value = F)
                         ),
-                        # -------Janice_add another check box--------------------
+                        # ------- another check box--------------------
                         useWaiter(),
                         actionButton("runIMPLIMET",
                             label = "Run IMPLIMET",
@@ -329,11 +326,7 @@ body <- dashboardBody(
                             DTOutput("table")
                         )
                     )
-					#actionButton("stopIMPLIMET",
-                     #       label = "Stop IMPLIMET",
-                     #       class = "btn-warning",
-                     #       style = "color: #fff;"
-                     #   )
+
                 ),
                 tabPanel(
                   strong("Visualization"),
@@ -365,12 +358,7 @@ body <- dashboardBody(
                     ),
                     tags$table(
                         width = "100%", border = "0",
-                        # works          tags$tr(
-                        # works            tags$td(span(plotOutput("clustRaw"))),
-                        # works           ),
-                        # works            tags$tr(
-                        # works               tags$td(span(plotOutput("clustImputed")))
-                        # works           ),
+ 
                         tags$tr(
                             tags$td(span(plotOutput("pcaRaw"))), tags$td(span(plotOutput("pcaImputed"))),
                         ),
@@ -772,7 +760,7 @@ server <- function(input, output, session) {
         compound_only_cleaned <- clean_up(transformed_compound_only, sample_missing, compound_missing)
         dataValues$db_data_cleaned <- compound_only_cleaned
 
-        dataValues$compoundOnly <- compound_only_cleaned # MCC added for missing rows fix April11 2024
+        dataValues$compoundOnly <- compound_only_cleaned #  added for missing rows 
 
         dataValues$db_data_cleaned_logshift <- dataValues$db_data_cleaned
 
