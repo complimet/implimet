@@ -28,7 +28,7 @@ read_in <- function(df_input, var_groups){
 ##### clean up the datasets
 clean_up <- function(compound_only, sample_thres, compound_thres){
   
-  # ======= janice updated this block ============
+  # ======= ============
   # get sample and compound total numbers
   sample_num <- dim(compound_only)[1]
   compound_num <- dim(compound_only)[2]
@@ -46,7 +46,7 @@ clean_up <- function(compound_only, sample_thres, compound_thres){
   row_missing <- apply(compound_only, 1, function(x) return(sum(is.na(x)) <= row_thres))
   cleaned_df <- cleaned_df_compound %>% filter(row_missing)
  # cleaned_df <- compound_only %>% filter(row_missing)
-  # ======= janice updated this block ============
+  # ======= ============
   
   #-----------------------
   # filtering message
@@ -122,7 +122,7 @@ imputation <- function(cleaned_df,  method = "optimization", full_search = FALSE
     
     print(table_output) # show output table of comparison
     # -------------------------------------------------
-    # ======= janice disabled the get user input here, by default retrieve the lowest MAPE method =======
+    # ======= get user input here, by default retrieve the lowest MAPE method =======
     
     # 2. get user input here with prompts -------------
     # default <- readline(prompt="Would you like to get the default: Y/N ") ## user input
