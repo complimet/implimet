@@ -75,7 +75,7 @@ rand_vect <- function(N, M, sd = 1, pos.only = TRUE) {
   return(vec)
 }
 
-# AIM: To generate missing not at random (MAR) lipid dataset
+# generate missing not at random (MAR) lipid dataset
 missing_index <- function(full_data, lipid_name, missing_value, missing_percentage, covariate_matrix, method){
   
   missing_percentage <- ifelse(missing_percentage %in% c(0, 1) || missing_percentage>1, 0.3, missing_percentage)
