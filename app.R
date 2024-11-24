@@ -429,7 +429,7 @@ body <- dashboardBody(
                     p(a("ldomic@uottawa.ca", href = "mailto: ldomic@uottawa.ca")),
                     br(),
                     h3("Cite the use of ImpLiMet in a publication"),
-                    p("Ou H, Surendra A, McDowell GSV, Hashimoto-Roth E,  Xia J, Bennett SAL, Cuperlovic-Culf M (2024) Imputation for Lipidomics and Metabolomics (ImpLiMet): Online application for optimization and method selection for missing data imputation. bioRxives, June, 2024: https://doi.org/10.1101/2024.06.17.599353 "),
+                    p("Ou H, Surendra A, McDowell GSV, Hashimoto-Roth E,  Xia J, Bennett SAL, Cuperlovic-Culf M (2024) Imputation for Lipidomics and Metabolomics (ImpLiMet): Online application for optimization and method selection for missing data imputation. biorxiv, June, 2024: https://doi.org/10.1101/2024.06.17.599353 "),
                     br(),
                     h3("Public Server"),
                     p("ImpLiMet: ", a("https://complimet.ca/shiny/implimet/", href = "https://complimet.ca/shiny/implimet/")),
