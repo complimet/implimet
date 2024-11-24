@@ -153,7 +153,7 @@ body <- dashboardBody(
                             ),
                             tags$li(
                                 p(
-                                    "The effect of the chosen imputation method on the data structure is visualized with a histogram and principal component analysis (PCA), comparing the impact of removing all features and all samples with missing data to the chosen imputation method. Data are autoscaled prior to histogram presentation and PCA. Additionally, kurtosis and skewness information is shown for each feature across all samples for original and imputed data providing user with visual assessment of features data distributions.",
+                                    "The effect of the chosen imputation method on the data structure is assessed and visualized by histograms and principal component analysis (PCA), comparing the impact of removing all features and all samples with missing data to the chosen imputation method on data structure, including kurtosis and skewness information challenging assumptions of a normal distribution.",
                                 )
                             ),
                         ),
@@ -192,7 +192,7 @@ body <- dashboardBody(
                     ),
                     p(
                         tags$ol(
-                            tags$li("Input data without multple feature measurement groups"),
+                            tags$li("Input data without multiple feature measurement groups"),
                             tags$i("Column one must contain Sample IDs. Row one must contain feature names."),
                             p(
                                 tags$figure(
