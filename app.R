@@ -148,7 +148,7 @@ body <- dashboardBody(
                             ),
                             tags$li(
                                 p(
-                                    "A comparison table is displayed showing the MAPE for each method. The method with the lowest MAPE across the missingness simulations is suggested as the optimal method. If the full parameter search is selected in the optimization for RF, KNN and MICE MAPE is calculated for range of hyperparameters (for RF: 5 to 500 trees, for KNN N from 10 to 100, for MICE 1 to 3 iterations), while without full search only one parameter is tested (for RF, tree of 500, for KNN N=10 and for MICE run uses 2 iterations.",
+                                    "A comparison table is displayed showing the MAPE for each method. The method with the lowest MAPE across the missingness simulations is suggested as the optimal method. If the full parameter search is selected in the optimization for RF, KNN and MICE, MAPE is calculated for a range of hyperparameters (for RF: 5 to 500 trees, for KNN N from 10 to 100, for MICE 1 to 3 iterations).  Without full search selected, only one parameter is tested (for RF, tree of 500, for KNN N=10 and for MICE run uses 2 iterations).",
                                 )
                             ),
                             tags$li(
