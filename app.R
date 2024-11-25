@@ -2,21 +2,27 @@
 # Shiny app
 # By Anu Surendra
 
-
 automatic_install_packages = function(){
   requiredPackages = c("shiny","shinydashboard","shinyWidgets","waiter",
                           "tidyverse","cluster","factoextra","dendextend",
                           "RColorBrewer","gplots","viridis","dplyr","ggplot2",
                           "DT","Hmisc","reshape2","moments","ipc","future",
-                          "promises","missRanger","mice","ggfortify",
-                          "Rtsne","magrittr","tidyr","heatmap3","foreach","svglite","impute")
+                          "promises","impute","missRanger","mice","ggfortify",
+                          "Rtsne","magrittr","tidyr","heatmap3","foreach","svglite")
   
   for(p in requiredPackages){
     if(!require(p,character.only = TRUE)){
-      install.packages(p)
+      
+      if(p=="impute"){
+        if (!require("BiocManager", quietly = TRUE))
+          install.packages("BiocManager")
+        
+        BiocManager::install("impute")
+      }else{
+        install.packages(p) 
+      }
     }
   }
-  
 }
 
 getCurrentFileLocation <-  function()
