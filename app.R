@@ -231,7 +231,7 @@ body <- dashboardBody(
                     h3("Sample Data"),
                     tags$ol(
                         tags$li(
-                            tags$a("Input data without multple feature measurement groups", href = "./src/input_templates/Input_data_without_group_info.csv")
+                            tags$a("Input data without multiple feature measurement groups", href = "./src/input_templates/Input_data_without_group_info.csv")
                         ),
                         tags$li(
                             tags$a("Input data with multiple feature measurement groups", href = "./src/input_templates/Input_data_with_group_Info.csv")
