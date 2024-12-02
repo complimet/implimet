@@ -85,12 +85,39 @@ body {
 .myClass { 
   font-size: 20px;
   line-height: 50px;
-  padding: 0 50px;
+  padding: 0 15px;
   overflow: hidden;
   color: #333333;
-  float:left;
 }
 
-th, td {
-  border: 1px solid black;
+.myDownload { 
+  color: #fff;
+  margin-bottom: 20px;
 }
+
+a:link#logomainlink {
+  color: white;
+  background-color: transparent;
+}
+
+a:visited#logomainlink {
+  color: white;
+  background-color: transparent;
+}
+
+a:hover#logomainlink {
+  color: white;
+  background-color: transparent;
+}
+
+a:active#logomainlink {
+  color: white;
+  background-color: transparent;
+}
+
+
+a:link#logomainlink {
+  color: white;
+  background-color: transparent;
+}
+
